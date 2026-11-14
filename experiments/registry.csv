@@ -1,0 +1,1 @@
+run_id,experiment,policy,seed,git_commit,config_path,split_sha256,environment,device,started_at,status,val_top1_percent,test_top1_percent,test_macro_f1,augmentation_ms_per_batch,total_training_seconds,log_uri,checkpoint_uri,notes

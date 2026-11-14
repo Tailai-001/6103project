@@ -1,0 +1,1 @@
+experiment,policy,k,gamma,num_seeds,test_top1_mean_percent,test_top1_std_percent,test_macro_f1_mean,augmentation_ms_mean,total_training_seconds_mean,run_ids,notes

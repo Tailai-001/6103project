@@ -1,0 +1,38 @@
+{
+  "status": "draft_not_executable",
+  "experiment": null,
+  "seed": null,
+  "dataset": {
+    "name": "cifar100",
+    "root": "data/",
+    "split_seed": null,
+    "validation_fraction": null,
+    "split_manifest": null
+  },
+  "model": {
+    "name": "cifar_resnet18",
+    "num_classes": 100,
+    "pretrained": false
+  },
+  "training": {
+    "epochs": null,
+    "batch_size": null,
+    "optimizer": null,
+    "learning_rate": null,
+    "weight_decay": null,
+    "scheduler": null,
+    "precision": null
+  },
+  "augmentation": {
+    "policy": null,
+    "alpha": null,
+    "p": null,
+    "k": null,
+    "gamma": null,
+    "sampling_rule": null,
+    "sampling_granularity": null,
+    "edge_normalization": null
+  },
+  "checkpoint_selection": null,
+  "output_dir": null
+}
