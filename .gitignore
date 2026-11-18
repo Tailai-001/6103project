@@ -40,3 +40,18 @@ data/splits/*
 *.out
 *.synctex.gz
 *.toc
+
+# Unified A/B entry point and fixed A split (small reproducibility artifacts)
+!data/__init__.py
+!data/dataset.py
+!data/split.py
+!data/splits/train_indices.npy
+!data/splits/val_indices.npy
+logs/
+remote_runtime/
+
+# Private operator handoff remains in the local delivery archive
+/restart_member_b_seq.sh
+/results/member_b/requirements.txt
+# Small sanitized public handoff bundle explicitly requested for GitHub
+!/deliverables/member_b/AI6103_member_B_public.zip

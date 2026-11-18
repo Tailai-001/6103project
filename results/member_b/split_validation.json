@@ -1,0 +1,13 @@
+{
+  "official_train_samples": 50000,
+  "train": 45000,
+  "validation": 5000,
+  "train_per_class": 450,
+  "validation_per_class": 50,
+  "disjoint_complete_cover": true,
+  "exact_a_split_hash_match": true,
+  "sha256": {
+    "train_indices.npy": "24520246ef0988e61bb0fe0f5c66da3a1f944be0569ccb5f0afc2536b92dfc15",
+    "val_indices.npy": "2c80060ed0fa8eba98b2023be25aa56794982c9d6bf762dd1eb29205835d67c2"
+  }
+}

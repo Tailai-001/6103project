@@ -1,0 +1,6 @@
+run_id,policy,k,seed,epochs,best_val_top1_percent,best_epoch,val_loss_at_best,sum_epoch_seconds,log_path,checkpoint_path
+b_dual_edge_k1_s42_seq,dual_edge,1,42,200,80.06,186,0.7959105394721031,2387.163425683975,logs/b_dual_edge_k1_s42_seq.csv,checkpoints/b_dual_edge_k1_s42_seq/best.pth
+b_dual_edge_k4_s42_seq,dual_edge,4,42,200,79.64,191,0.7785206800103187,2557.0676364973187,logs/b_dual_edge_k4_s42_seq.csv,checkpoints/b_dual_edge_k4_s42_seq/best.pth
+b_source_edge_k4_s42_seq,source_edge,4,42,200,80.36,197,0.765662005507946,2385.905377060175,logs/b_source_edge_k4_s42_seq.csv,checkpoints/b_source_edge_k4_s42_seq/best.pth
+b_dual_edge_k8_s42_seq,dual_edge,8,42,200,79.62,198,0.7703106017112732,2423.9918023347855,logs/b_dual_edge_k8_s42_seq.csv,checkpoints/b_dual_edge_k8_s42_seq/best.pth
+b_source_edge_k8_s42_seq,source_edge,8,42,200,79.3,189,0.7979284377574921,2384.1529526412487,logs/b_source_edge_k8_s42_seq.csv,checkpoints/b_source_edge_k8_s42_seq/best.pth

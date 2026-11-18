@@ -1,7 +1,5 @@
-# 可核实的结果
+# 结果
 
-`tables/main_results.csv` 是空表头模板。`tables/` 放汇总数据，`figures/` 放由真实日志生成的小型图示。当前未运行任何 E0–E4、E2-S 或 E4-R 实验。
+A 的原始 E0/E1 日志位于 `Baseline Implementation & Training Infrastructure (Member A)/results/baselines/`。B 的测试、图示、增强计时及实测汇总位于 `member_b/`，只有实际完成的运行才进入最终汇总。
 
-除分类与效率外，记录真实接缝代价、Mask 面积与边界长度、回退率及形状匹配说明。无内部接缝的边界指标为不适用；其计数与分布诊断应在原始日志或附表保留，不能填零美化均值。
-
-不要把原论文数值、本组拟定目标或示例数字填成实测结果。大文件使用共享存储，并在 `experiments/registry.csv` 登记链接。
+`tables/main_results.csv` 保留最终 test 指标模板；B 目前只做 validation，不向其中填入验证数值。模型 checkpoint 和完整运行日志保留在 GPU 项目目录，本地交付包含必要的小型日志与复现证据。

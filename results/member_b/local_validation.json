@@ -1,0 +1,26 @@
+{
+  "python": "3.10.1",
+  "torch": "2.14.1",
+  "numpy": "2.2.6",
+  "device": "cpu",
+  "tests_total": 17,
+  "passed": 16,
+  "skipped": 1,
+  "skip_reason": "CUDA unavailable locally",
+  "command": "python -m unittest discover -s tests -v",
+  "a_files_byte_identical": [
+    "augmentations/cutmix.py",
+    "data/dataset.py",
+    "models/resnet.py"
+  ],
+  "diff_check": "passed",
+  "compile_check": "passed",
+  "real_resnet18_forward_backward": "passed",
+  "output_shape": [
+    2,
+    100
+  ],
+  "loss_and_gradient_finite": true,
+  "paired_visualization_inspected": true,
+  "atomic_checkpoint_failure_preservation": "passed"
+}

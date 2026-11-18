@@ -1,0 +1,84 @@
+{
+  "device": "cpu",
+  "gpu": null,
+  "torch": "2.14.1",
+  "dtype": "torch.float32",
+  "batch_size": 128,
+  "warmup": 10,
+  "repetitions": 50,
+  "timing": "synchronized, complete augmentation only, excludes data loading and plotting",
+  "results": [
+    {
+      "policy": "random",
+      "k": 1,
+      "augmentation_ms_per_batch": 2.089011660136748,
+      "selected_source_edge_mean": 0.9935426712036133,
+      "selected_target_edge_mean": 0.9700411558151245,
+      "diagnostic_p": 1,
+      "timing_p": 0.5,
+      "area_mean": 0.2945556640625,
+      "area_std": 0.18923158943653107,
+      "internal_boundary_length_mean": 38.5078125
+    },
+    {
+      "policy": "dual_edge",
+      "k": 1,
+      "augmentation_ms_per_batch": 23.68901250010822,
+      "selected_source_edge_mean": 0.9935426712036133,
+      "selected_target_edge_mean": 0.9700411558151245,
+      "diagnostic_p": 1,
+      "timing_p": 0.5,
+      "area_mean": 0.2945556640625,
+      "area_std": 0.18923158943653107,
+      "internal_boundary_length_mean": 38.5078125
+    },
+    {
+      "policy": "source_edge",
+      "k": 4,
+      "augmentation_ms_per_batch": 24.110938340018038,
+      "selected_source_edge_mean": 1.326846718788147,
+      "selected_target_edge_mean": 1.0843608379364014,
+      "diagnostic_p": 1,
+      "timing_p": 0.5,
+      "area_mean": 0.2945556640625,
+      "area_std": 0.18923158943653107,
+      "internal_boundary_length_mean": 55.0078125
+    },
+    {
+      "policy": "dual_edge",
+      "k": 4,
+      "augmentation_ms_per_batch": 24.32308749994263,
+      "selected_source_edge_mean": 1.2900176048278809,
+      "selected_target_edge_mean": 0.9291635751724243,
+      "diagnostic_p": 1,
+      "timing_p": 0.5,
+      "area_mean": 0.2945556640625,
+      "area_std": 0.18923158943653107,
+      "internal_boundary_length_mean": 52.2265625
+    },
+    {
+      "policy": "source_edge",
+      "k": 8,
+      "augmentation_ms_per_batch": 24.72553166007856,
+      "selected_source_edge_mean": 1.4214775562286377,
+      "selected_target_edge_mean": 1.0346930027008057,
+      "diagnostic_p": 1,
+      "timing_p": 0.5,
+      "area_mean": 0.2945556640625,
+      "area_std": 0.18923158943653107,
+      "internal_boundary_length_mean": 56.296875
+    },
+    {
+      "policy": "dual_edge",
+      "k": 8,
+      "augmentation_ms_per_batch": 24.11743500008015,
+      "selected_source_edge_mean": 1.3854633569717407,
+      "selected_target_edge_mean": 0.9004485607147217,
+      "diagnostic_p": 1,
+      "timing_p": 0.5,
+      "area_mean": 0.2945556640625,
+      "area_std": 0.18923158943653107,
+      "internal_boundary_length_mean": 54.65625
+    }
+  ]
+}

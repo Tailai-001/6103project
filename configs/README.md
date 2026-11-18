@@ -1,7 +1,3 @@
-# 配置（A/D）
+# 实验配置
 
-`experiment_template.json` 是字段草案，`null` 表示尚未决定；它不由任何训练入口读取，也不是可执行训练配置。A 实现入口时应冻结 schema，为 E0–E4、E2-S 和 E4-R 生成完整配置，编号见根 README。
-
-E1–E3 保持相同实际矩形面积，比较随机、双侧边缘和接缝选区。E4/E4-R 还要固定边界半径、连续性、最小宽度、面积偏移预算及回退规则，报告最终形状/面积分布。模型、划分、训练预算、优化器、p 与 α 共用，超参数只用验证集选择。
-
-`alpha` 为 CutMix 分布参数，`beta` 为接缝惩罚系数；上游脚本 `--beta` 的含义与本模板不同。原论文学习率不可直接视为 ResNet-18 默认值。
+`main.yaml` 复用 A 默认配置。`b_*_s42.yaml` 是 B 的五组可执行 200-epoch 配置；dual 的 gamma=.5、source 的 gamma=0，K=1/4/8，单侧和双侧共享 K=1 控制。B 的 last checkpoint 每 10 epoch 保存，最终轮必存；best 选择规则不变。训练命令见 README_B.md。`experiment_template.json` 保留为历史字段草案，训练入口不读取它。

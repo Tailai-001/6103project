@@ -1,7 +1,7 @@
-# 实验登记（D）
+# 实验登记
 
-`registry.csv` 当前只有表头，没有运行记录。每个 seed 单独一行，用唯一 `run_id`。状态建议 `planned / running / completed / failed / excluded`，排除需在 notes 中写明原因。
+`registry.csv` 由 B 的 `scripts/member_b_suite.py` 在每个训练任务启动前登记，完成后更新状态；smoke、pilot、formal 分别标注，失败保留 exit code。每个运行使用唯一 run_id，不覆盖已有证据。A 的原始 E0/E1 CSV 保留在 A 上传目录。
 
-配置、数据划分与 commit 必须可追溯；日志/checkpoint 可放共享存储并登记 URL。K、γ、β、路径半径、μ 及面积预算只用验证集选择，测试评价在配置冻结后进行。草案字段参见 [配置模板](../configs/experiment_template.json)。
+GPU 工作副本不含 Git 历史时，git_commit 留空，notes 写明完整源码归档 SHA-256；每个训练环境另记录 Python 源码和固定划分的 SHA-256。运行配置、日志及 checkpoint 路径均相对项目根目录。
 
-编号采用根 README 的 E0–E4、E2-S、E4-R。旧双侧 E3 已改为 E2；若以后导入旧记录，必须保存原始编号并标明映射，不静默改名。
+B 的结果仅是固定 validation，官方 test 表由 A/D 后续填写；禁止把验证准确率填入 test 字段。多 seed 和 C 的 seam/DP 实验需另行登记。
