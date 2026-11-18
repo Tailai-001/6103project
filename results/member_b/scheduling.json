@@ -1,0 +1,16 @@
+{
+  "changed_at_utc": "2026-11-18T10:27:10.908323+00:00",
+  "reason": "5 simultaneous processes measured about 100-112 seconds per epoch per process versus about 10 seconds isolated; restart sequentially for higher aggregate throughput and interpretable training walltimes",
+  "excluded_runs": [
+    "b_dual_edge_k1_s42",
+    "b_dual_edge_k4_s42",
+    "b_source_edge_k4_s42",
+    "b_dual_edge_k8_s42",
+    "b_source_edge_k8_s42"
+  ],
+  "replacement_suffix": "seq",
+  "replacement_workers": 1,
+  "training_and_augmentation_code_unchanged": true,
+  "initial_source_snapshot": "source_ef7d7ed365408bd8.tar.gz",
+  "replacement_source_snapshot": "ai6103_member_b_source_v2.tar.gz"
+}

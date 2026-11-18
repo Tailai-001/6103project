@@ -8,7 +8,7 @@
 
 ## 0. 从这里开始
 
-本仓库是 AI6103 五人小组的**项目起始仓库**。当前已有说明文档、实验协议草案、目录和官方代码快照；**本组训练框架、增强算法及 E0–E4 实验尚未实现或运行**。下文描述待实现的方法和职责，不代表已验证的性能或原创性。
+本仓库是 AI6103 五人小组的**项目起始仓库**。A 已上传统一训练框架和 E0/E1 的 200-epoch 结果；B 的根目录集成实现和复现说明见 [README_B.md](README_B.md)。E3/E4 仍待 C 实现。下文描述待实现的方法和职责，不代表已验证的性能或原创性。
 
 本版将原先的纯边缘选区方案扩展为“内容评分 + 接缝评分 + 局部边界优化”。**实验编号已更新：原双侧边缘方法归入新 E2，新 E3 表示接缝感知矩形选区，E4 表示动态规划边界优化。** 单侧边缘方法保留为 E2-S 消融，避免旧 E3 与新 E3 混用。
 
@@ -22,7 +22,7 @@ git clone https://github.com/Tailai-001/6103project.git
 cd 6103project
 ```
 
-当前没有项目级 `train.py` / `evaluate.py` 或已验证的训练环境。安装与训练命令由 A 跑通统一入口后补充。`third_party/CutMix-PyTorch/train.py` 是历史参考源码，不能当作本组完成版。
+项目级 `train.py` 已复用 A 的统一训练循环，支持 none/random/source_edge/dual_edge，安装与训练命令见 README_B.md。`evaluate.py` 仍由 D 负责。`third_party/CutMix-PyTorch/train.py` 是历史参考源码，不能当作本组完成版。
 
 ## 1. 原论文、研究问题与预期方案
 
@@ -114,7 +114,7 @@ E4 可能改变面积、周长及所含内容，因此只能在控制这些因�
 3. 实现 E0/E1，保存配置、代码版本、环境、日志与 checkpoint；与 D 共同冻结预算和 checkpoint 选择规则。
 4. 集成 B/C 模块，确保训练循环统一使用最终 Mask 面积权重；负责设备兼容性、训练调度与最终运行说明。
 
-**交付（待实现）：** `train.py`、`models/`、`configs/`、固定划分说明、E0/E1 结果、环境与复现命令。
+**A 已交付（见原始 A 目录）：** `train.py`、`models/`、`configs/`、固定划分说明、E0/E1 结果、环境与复现命令。
 
 ### 成员 B — Edge-Guided Selection（单／双侧边缘方法负责人）
 
@@ -123,7 +123,7 @@ E4 可能改变面积、周长及所含内容，因此只能在控制这些因�
 3. 检查实际面积、边界、零/极小区域、K=1、γ=0、常量图像、device/dtype；为 C 提供稳定的候选集与边缘分数接口。
 4. 对接 A 的入口，完成 E2/E2-S 与 K=1/4/8 等内容选择消融，输出同一对图像的选框和混合示例。
 
-**交付（待实现）：** `augmentations/edge_utils.py`、`source_edge.py`、`dual_edge.py`、共享候选工具、正确性测试、E2 及消融结果。
+**B 已完成实现、检查与单 seed 实验（见 README_B.md）：** `augmentations/edge_utils.py`、`source_edge.py`、`dual_edge.py`、共享候选工具、正确性测试、E2 及消融结果。
 
 ### 成员 C — Seam Selection & Boundary Optimization（接缝方法负责人）
 
@@ -168,7 +168,7 @@ E4 可能改变面积、周长及所含内容，因此只能在控制这些因�
 
 先冻结最小接口和几何约定，再并行开发；通过集成检查后启动统一主实验。C 不必等 B 的完整训练结果，D/E 也不必等主实验结束。这里不规定日历或时间表。
 
-### 3.2 统一增强接口（草案，尚未实现）
+### 3.2 统一增强接口（A/B 已接入，C 待接入）
 
 ```python
 cutmix_batch(images, labels, policy, alpha, p, k, gamma,

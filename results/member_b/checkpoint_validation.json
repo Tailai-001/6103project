@@ -1,0 +1,62 @@
+[
+  {
+    "run_id": "b_dual_edge_k1_s42_seq",
+    "split": "fixed_validation_only",
+    "samples": 5000,
+    "num_workers": 0,
+    "evaluation_script_sha256": "62e2f47793ec9ea7b5a4bf624c50fe8224e89ab547f2b2cb883cd8de17aa212f",
+    "checkpoint_epoch": 186,
+    "val_top1_percent": 80.06,
+    "val_macro_f1": 0.7995569147549655,
+    "val_loss": 0.7959105394721031,
+    "logged_accuracy_verified": true
+  },
+  {
+    "run_id": "b_dual_edge_k4_s42_seq",
+    "split": "fixed_validation_only",
+    "samples": 5000,
+    "num_workers": 0,
+    "evaluation_script_sha256": "62e2f47793ec9ea7b5a4bf624c50fe8224e89ab547f2b2cb883cd8de17aa212f",
+    "checkpoint_epoch": 191,
+    "val_top1_percent": 79.64,
+    "val_macro_f1": 0.7955626112767139,
+    "val_loss": 0.7785206800103187,
+    "logged_accuracy_verified": true
+  },
+  {
+    "run_id": "b_source_edge_k4_s42_seq",
+    "split": "fixed_validation_only",
+    "samples": 5000,
+    "num_workers": 0,
+    "evaluation_script_sha256": "62e2f47793ec9ea7b5a4bf624c50fe8224e89ab547f2b2cb883cd8de17aa212f",
+    "checkpoint_epoch": 197,
+    "val_top1_percent": 80.36,
+    "val_macro_f1": 0.8022936636936407,
+    "val_loss": 0.765662005507946,
+    "logged_accuracy_verified": true
+  },
+  {
+    "run_id": "b_dual_edge_k8_s42_seq",
+    "split": "fixed_validation_only",
+    "samples": 5000,
+    "num_workers": 0,
+    "evaluation_script_sha256": "62e2f47793ec9ea7b5a4bf624c50fe8224e89ab547f2b2cb883cd8de17aa212f",
+    "checkpoint_epoch": 198,
+    "val_top1_percent": 79.62,
+    "val_macro_f1": 0.7945754812692399,
+    "val_loss": 0.7703106017112732,
+    "logged_accuracy_verified": true
+  },
+  {
+    "run_id": "b_source_edge_k8_s42_seq",
+    "split": "fixed_validation_only",
+    "samples": 5000,
+    "num_workers": 0,
+    "evaluation_script_sha256": "62e2f47793ec9ea7b5a4bf624c50fe8224e89ab547f2b2cb883cd8de17aa212f",
+    "checkpoint_epoch": 189,
+    "val_top1_percent": 79.3,
+    "val_macro_f1": 0.7923526132471599,
+    "val_loss": 0.7979284377574921,
+    "logged_accuracy_verified": true
+  }
+]

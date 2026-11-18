@@ -8,6 +8,6 @@
 4. 每次训练先在 `experiments/registry.csv` 登记，保存完整配置、commit、seed、依赖版本和原始日志。失败运行也保留记录。
 5. 公开仓库仅提交必要代码和可核验的小型结果。数据、checkpoint 和视频存放共享存储；学生信息和课程提交材料按课程要求另行汇总。
 
-当前实验登记表和结果表都是空模板，目录说明中的代码文件名是待实现交付物。项目级安装和运行命令由 A 在首次验证训练后补充。
+A 原始交付保留归档，B 的集成、安装、运行与检查见 README_B.md。B 的 smoke/pilot/formal 运行自动登记，实际结果保存在 results/member_b/。最终 test 结果表仍由 A/D 完成。
 
 只读访问和克隆公开仓库无需加入协作者。需要直接推送的成员由仓库拥有者通过 GitHub Settings → Collaborators 邀请；也可以采用 fork + Pull Request。

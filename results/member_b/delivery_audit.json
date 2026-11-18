@@ -1,0 +1,25 @@
+{
+  "formal_runs": 5,
+  "epochs_each": 200,
+  "train_samples_per_epoch": 45000,
+  "validation_samples": 5000,
+  "official_test_used": false,
+  "seed": 42,
+  "gpu_tests_passed": 17,
+  "all_checkpoint_metrics_verified": true,
+  "all_core_source_hashes_match_training": true,
+  "evaluation_script_sha256": "62e2f47793ec9ea7b5a4bf624c50fe8224e89ab547f2b2cb883cd8de17aa212f",
+  "completed_run_ids": [
+    "b_dual_edge_k1_s42_seq",
+    "b_dual_edge_k4_s42_seq",
+    "b_source_edge_k4_s42_seq",
+    "b_dual_edge_k8_s42_seq",
+    "b_source_edge_k8_s42_seq"
+  ],
+  "source_snapshots": {
+    "source_ef7d7ed365408bd8.tar.gz": "ef7d7ed365408bd86dfcf73bbcbc283355f8981f5d9f5788d45250cd3d831556",
+    "ai6103_member_b_source_v2.tar.gz": "9a15ae958f232aa2ce3951e1caaeed80487edb2856224002510072827de0dc33"
+  },
+  "remote_artifact_root": "<private GPU workspace; location retained in local handoff>",
+  "notes": "Single-seed validation only; no official test. Public copy omits private server paths."
+}

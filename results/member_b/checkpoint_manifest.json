@@ -1,0 +1,62 @@
+[
+  {
+    "run_id": "b_dual_edge_k1_s42_seq",
+    "path": "checkpoints/b_dual_edge_k1_s42_seq/best.pth",
+    "bytes": 89860158,
+    "sha256": "0db87d15137e11ee44990c6b29d69c6f2a5bb5daba639976f0f323e2a29c1e95"
+  },
+  {
+    "run_id": "b_dual_edge_k1_s42_seq",
+    "path": "checkpoints/b_dual_edge_k1_s42_seq/last.pth",
+    "bytes": 89860158,
+    "sha256": "4e5a5374ca6f40f4176556f5d5b4749bbcf50fd9fe4191168ef84341f7ffa3a8"
+  },
+  {
+    "run_id": "b_dual_edge_k4_s42_seq",
+    "path": "checkpoints/b_dual_edge_k4_s42_seq/best.pth",
+    "bytes": 89860158,
+    "sha256": "9f666a52c38567772dac619141b5f78e48dea745075b625c8d4aad3d9620762c"
+  },
+  {
+    "run_id": "b_dual_edge_k4_s42_seq",
+    "path": "checkpoints/b_dual_edge_k4_s42_seq/last.pth",
+    "bytes": 89860158,
+    "sha256": "f8ef64da7c3bd126a7d4fd4ac0f86a25f0fa6f456a405cb99e8e7f25224c4749"
+  },
+  {
+    "run_id": "b_source_edge_k4_s42_seq",
+    "path": "checkpoints/b_source_edge_k4_s42_seq/best.pth",
+    "bytes": 89860158,
+    "sha256": "309a828823d71c59c1a0e2d0b87b8a17e2ae79a2575ac0f9365180c8ef7ebd88"
+  },
+  {
+    "run_id": "b_source_edge_k4_s42_seq",
+    "path": "checkpoints/b_source_edge_k4_s42_seq/last.pth",
+    "bytes": 89860158,
+    "sha256": "0feb18d98cb2fb761739530090d3c8b6d8617806d9704ef99390d55cdb735661"
+  },
+  {
+    "run_id": "b_dual_edge_k8_s42_seq",
+    "path": "checkpoints/b_dual_edge_k8_s42_seq/best.pth",
+    "bytes": 89860158,
+    "sha256": "521f5f72e35b00792e84bbbec4eb95f6ab093bad25544546086cbe0b1da3f392"
+  },
+  {
+    "run_id": "b_dual_edge_k8_s42_seq",
+    "path": "checkpoints/b_dual_edge_k8_s42_seq/last.pth",
+    "bytes": 89860158,
+    "sha256": "fdb159c131d9f87ecf0f0baeb5efa7c35ff793fd3bf3940280aecfa9f3d68a50"
+  },
+  {
+    "run_id": "b_source_edge_k8_s42_seq",
+    "path": "checkpoints/b_source_edge_k8_s42_seq/best.pth",
+    "bytes": 89860158,
+    "sha256": "ce493d3eee446338a502aed75cefdf29129513ae25ef284cd620bf40ea0d62ad"
+  },
+  {
+    "run_id": "b_source_edge_k8_s42_seq",
+    "path": "checkpoints/b_source_edge_k8_s42_seq/last.pth",
+    "bytes": 89860158,
+    "sha256": "971f4ab218e85353223cb618d86e2ba782a1eb4ec78a44cc3f1aeb0105fb2be4"
+  }
+]

@@ -1,0 +1,22 @@
+test_interrupted_save_preserves_previous_checkpoint (test_checkpoint.CheckpointTests.test_interrupted_save_preserves_previous_checkpoint) ... ok
+test_argmax_matches_scores (test_member_b.MemberBTests.test_argmax_matches_scores) ... ok
+test_candidates_equal_area_and_within_bounds (test_member_b.MemberBTests.test_candidates_equal_area_and_within_bounds) ... ok
+test_cuda_device_dtype_and_degeneracy (test_member_b.MemberBTests.test_cuda_device_dtype_and_degeneracy) ... ok
+test_full_empty_boundary_translation (test_member_b.MemberBTests.test_full_empty_boundary_translation) ... ok
+test_gamma_zero_source_equivalence (test_member_b.MemberBTests.test_gamma_zero_source_equivalence) ... ok
+test_integral_against_brute_force (test_member_b.MemberBTests.test_integral_against_brute_force) ... ok
+test_integral_tiny_edge_after_large_prefix (test_member_b.MemberBTests.test_integral_tiny_edge_after_large_prefix) ... ok
+test_invalid_parameters (test_member_b.MemberBTests.test_invalid_parameters) ... ok
+test_k1_exact_a_e1 (test_member_b.MemberBTests.test_k1_exact_a_e1) ... ok
+test_known_source_and_target_preference (test_member_b.MemberBTests.test_known_source_and_target_preference) ... ok
+test_p0_and_none (test_member_b.MemberBTests.test_p0_and_none) ... ok
+test_pixels_labels_area_and_no_mutation (test_member_b.MemberBTests.test_pixels_labels_area_and_no_mutation) ... ok
+test_prefix_and_rng_independent_of_k (test_member_b.MemberBTests.test_prefix_and_rng_independent_of_k) ... ok
+test_singleton_tiny_and_dtype (test_member_b.MemberBTests.test_singleton_tiny_and_dtype) ... ok
+test_sobel_constant_and_known_ramp (test_member_b.MemberBTests.test_sobel_constant_and_known_ramp) ... ok
+test_tie_first_and_no_nan (test_member_b.MemberBTests.test_tie_first_and_no_nan) ... ok
+
+----------------------------------------------------------------------
+Ran 17 tests in 20.266s
+
+OK
