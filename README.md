@@ -8,7 +8,44 @@
 
 ## 0. 从这里开始
 
-本仓库是 AI6103 五人小组的**项目起始仓库**。当前已有说明文档、实验协议草案、目录和官方代码快照；**本组训练框架、增强算法及 E0–E4 实验尚未实现或运行**。下文描述待实现的方法和职责，不代表已验证的性能或原创性。
+本仓库是 AI6103 五人小组的 Seam-Aware CutMix 项目。**当前已交付 A 的基线框架与 E0/E1 日志；B 的边缘方法、测试与实验记录已提交 PR #1，尚未合并。E3 接缝选区、E4 动态规划及 E4-R 形状对照尚未见代码或实验交付。** 下文先列实际进度，后续章节保留完整研究方案与职责；未交付的方法不代表已实现或已验证。
+
+### 0.1 完成进度（2026-11-19 核对）
+
+本快照依据主分支代码提交 `cc91855` 与 [PR #1](https://github.com/Tailai-001/6103project/pull/1) 的提交 `9562fdf`，区分“已在主分支”“待合并”和“未见上传”。未见上传不等于成员本地尚未开展工作。
+
+| 分工 | 已有交付与证据 | 仍需完成 |
+| --- | --- | --- |
+| **A：训练框架** | 已在主分支上传 CIFAR ResNet-18、固定 45k/5k 划分、统一训练入口、Original CutMix，以及 E0/E1 各 200 epoch 日志；见 [A 交付说明](Baseline%20Implementation%20%26%20Training%20Infrastructure%20%28Member%20A%29/README_A.md) | 后续方法集成、全方法统一环境与复现核对 |
+| **B：边缘方法** | [PR #1（待合并）](https://github.com/Tailai-001/6103project/pull/1) 包含 Sobel、同面积候选、E2/E2-S、K 消融、图示、效率分析和 5 组 200 epoch 日志；附远端 17 项测试通过及 checkpoint 验证记录 | 审阅与合并；后续多 seed 和官方测试集评价 |
+| **C：接缝与 DP** | 当前主分支及 PR #1 未见 E3/E4/E4-R 实现；PR 中这些 policy 仍明确抛出未实现错误 | 优先交付 E3，再推进 E4/E4-R、路径/面积测试与实验 |
+| **D：统一评价** | B 的 PR 已提供部分评价、汇总、Macro-F1、图示与计时工具 | 全方法统一结果登记、接缝/形状评价、多 seed 和最终测试；这些尚未见完整交付 |
+| **E：报告与视频** | 现有目录说明与基础文献条目 | 尚未见报告正文、LaTeX 成稿、最终报告或展示视频 |
+
+### 0.2 已记录的阶段结果
+
+以下均为 **seed 42、固定 5,000 张验证集上的最佳 Top-1**，每组有 200 epoch CSV 记录；**不是官方测试集结果，也不是多 seed 均值**。
+
+| 交付来源 | 方法 | K | 最佳 Val Top-1（%） |
+| --- | --- | --- | ---: |
+| A / 主分支 | E0：No CutMix | — | 77.74 |
+| A / 主分支 | E1：Original CutMix | — | 80.52 |
+| B / PR #1 | K=1、E1 等价增强控制 | 1 | 80.06 |
+| B / PR #1 | E2：Dual-Sided Edge-Guided | 4 | 79.64 |
+| B / PR #1 | E2-S：Source Edge-Guided | 4 | 80.36 |
+| B / PR #1 | E2：Dual-Sided Edge-Guided | 8 | 79.62 |
+| B / PR #1 | E2-S：Source Edge-Guided | 8 | 79.30 |
+
+A 的原始日志在 [baseline 结果目录](Baseline%20Implementation%20%26%20Training%20Infrastructure%20%28Member%20A%29/results/baselines/)；B 的指标、负面结果、环境与排除记录见 [B 结果说明（待合并分支）](https://github.com/nemosunny/6103project/blob/9562fdffa1e42ea87c29890faeaf28fda07747dc/results/member_b/RESULTS_B.md)。已核对七组 CSV 均有连续的 200 个 epoch，表中最佳值与原始日志一致；B 汇总还与其提交的 checkpoint 验证记录一致。
+
+**解释边界：** A/B 使用不同运行环境，不能直接比较训练耗时或把微小分类差异归因于方法。B 的单侧 K=4 比本环境 K=1 控制高 0.30 个百分点，双侧 K=4/8 均未超过控制；单 seed 不能证明统计显著提升，也不能声称超过 A 的 E1。此次进度核对未重新运行训练、GPU 测试或 checkpoint 评价；17 项测试和 checkpoint 验证指交付中已有的记录。
+
+### 0.3 下一步与集成状态
+
+- **A/B：** 审阅 PR #1 并统一主入口；B 的根目录集成代码目前在待合并 PR 中。
+- **C：** 复用 B 的共享候选与边缘工具，优先完成最低接缝创新 E3；E4/E4-R 为后续核心扩展。
+- **D：** 同步整理统一评价、接缝与形状指标，规划可比较的多 seed 和最终测试。主分支 `experiments/registry.csv` 仍为空模板，B 的运行登记在 PR 中。
+- **E：** 可立即整理已有方法、实验设置及阶段性结果，报告中明确区分已交付与待验证部分。
 
 本版将原先的纯边缘选区方案扩展为“内容评分 + 接缝评分 + 局部边界优化”。**实验编号已更新：原双侧边缘方法归入新 E2，新 E3 表示接缝感知矩形选区，E4 表示动态规划边界优化。** 单侧边缘方法保留为 E2-S 消融，避免旧 E3 与新 E3 混用。
 
@@ -22,7 +59,7 @@ git clone https://github.com/Tailai-001/6103project.git
 cd 6103project
 ```
 
-当前没有项目级 `train.py` / `evaluate.py` 或已验证的训练环境。安装与训练命令由 A 跑通统一入口后补充。`third_party/CutMix-PyTorch/train.py` 是历史参考源码，不能当作本组完成版。
+**当前代码位置：** 主分支的 A 训练入口位于 `Baseline Implementation & Training Infrastructure (Member A)/train.py`，配置、依赖、划分和 E0/E1 日志位于同一交付目录。B 的根目录 `train.py`、边缘模块与验证工具在 PR #1 中，尚未进入 `main`；顶层 `evaluate.py` 尚未交付。具体运行参考各自交付说明与环境记录。`third_party/CutMix-PyTorch/train.py` 仍是未修改的历史参考源码。
 
 ## 1. 原论文、研究问题与预期方案
 
@@ -114,7 +151,7 @@ E4 可能改变面积、周长及所含内容，因此只能在控制这些因�
 3. 实现 E0/E1，保存配置、代码版本、环境、日志与 checkpoint；与 D 共同冻结预算和 checkpoint 选择规则。
 4. 集成 B/C 模块，确保训练循环统一使用最终 Mask 面积权重；负责设备兼容性、训练调度与最终运行说明。
 
-**交付（待实现）：** `train.py`、`models/`、`configs/`、固定划分说明、E0/E1 结果、环境与复现命令。
+**交付状态：** 基线部分已在 A 独立交付目录中上传，包含 `train.py`、模型、配置、固定划分、依赖版本与 E0/E1 日志；根目录集成及后续方法集成仍需继续。
 
 ### 成员 B — Edge-Guided Selection（单／双侧边缘方法负责人）
 
@@ -123,7 +160,7 @@ E4 可能改变面积、周长及所含内容，因此只能在控制这些因�
 3. 检查实际面积、边界、零/极小区域、K=1、γ=0、常量图像、device/dtype；为 C 提供稳定的候选集与边缘分数接口。
 4. 对接 A 的入口，完成 E2/E2-S 与 K=1/4/8 等内容选择消融，输出同一对图像的选框和混合示例。
 
-**交付（待实现）：** `augmentations/edge_utils.py`、`source_edge.py`、`dual_edge.py`、共享候选工具、正确性测试、E2 及消融结果。
+**交付状态：** 上述边缘模块、共享候选、测试、E2/E2-S 与 K 消融结果已在 PR #1 提交，尚未合并；多 seed 与官方测试集评价待后续统一开展。
 
 ### 成员 C — Seam Selection & Boundary Optimization（接缝方法负责人）
 
@@ -132,7 +169,7 @@ E4 可能改变面积、周长及所含内容，因此只能在控制这些因�
 3. 实现同一 E3 矩形上的随机边界对照 E4-R；与 B 共用配对和基础候选，不另写训练循环。
 4. 先用两张模拟的 32×32 图像与一个矩形独立测试，再交给 A 集成；完成 E3、争取完成 E4/E4-R，记录 β、r、μ 等消融与成功/失败案例。
 
-**交付（待实现）：** `augmentations/seam_utils.py`、`seam_aware.py`、`seam_dp.py`、`seam_random.py`、Mask/路径测试、E3/E4 及对应对照结果。
+**计划交付（尚未见上传）：** `augmentations/seam_utils.py`、`seam_aware.py`、`seam_dp.py`、`seam_random.py`、Mask/路径测试、E3/E4 及对应对照结果。
 
 ### 成员 D — Evaluation & Experimental Analysis（评估与实验管理负责人）
 
@@ -142,7 +179,7 @@ E4 可能改变面积、周长及所含内容，因此只能在控制这些因�
 4. 生成主结果、收敛曲线、效率、形状及参数消融图表；多 seed 保留原值并统计均值/标准差。资源允许时补充自建噪声/模糊/遮挡推理测试。
 5. 对有效、无效及负面结果都保留证据；不把更低的接缝代价直接解释为更高语义质量或更高分类准确率。
 
-**交付（待实现）：** `evaluate.py`、`analysis/`、结果表与图、形状/边界诊断、实验复现清单。
+**交付状态：** B 的 PR 已提供部分评价与汇总工具；D 的全方法统一评价、`evaluate.py`、形状/边界诊断和最终结果汇总尚未见完整交付。
 
 ### 成员 E — Report & Oral Presentation（报告与展示负责人）
 
@@ -152,7 +189,7 @@ E4 可能改变面积、周长及所含内容，因此只能在控制这些因�
 4. 沿用原始项目说明的英文 AAAI 双栏、正文最多 6 页（不含 References）与不超过 5 分钟视频要求，最终以课程官方文件为准。展示研究问题、两阶段设计、公平对照、成本与结论。
 5. 汇总提交材料、引用与 Academic Integrity Pledge；成员个人信息按课程要求另行汇总，不默认发布到公开仓库。
 
-**交付（待完成）：** `report/`、参考文献、报告 PDF、`presentation/` 的脚本与展示视频、提交检查表。
+**计划交付（尚未见成稿上传）：** `report/`、参考文献、报告 PDF、`presentation/` 的脚本与展示视频、提交检查表。
 
 ## 3. 并行协作、统一接口与验收
 
@@ -168,7 +205,9 @@ E4 可能改变面积、周长及所含内容，因此只能在控制这些因�
 
 先冻结最小接口和几何约定，再并行开发；通过集成检查后启动统一主实验。C 不必等 B 的完整训练结果，D/E 也不必等主实验结束。这里不规定日历或时间表。
 
-### 3.2 统一增强接口（草案，尚未实现）
+### 3.2 统一增强接口与接入状态
+
+A 的交付已使用以下签名和五元返回；主分支支持 `none/random`，B 的 PR 增加 `source_edge/dual_edge`。`seam_aware/seam_dp/seam_random` 仍待 C 接入，相关 metadata 扩展由 A/B/C/D 对齐。
 
 ```python
 cutmix_batch(images, labels, policy, alpha, p, k, gamma,
@@ -176,7 +215,7 @@ cutmix_batch(images, labels, policy, alpha, p, k, gamma,
 ```
 
 - policy 为第 1.2 节各项；`alpha` 是 CutMix Beta 分布参数，`beta` 是**接缝惩罚系数**，不要与官方脚本 `--beta` 的旧命名混用。
-- 建议返回 `mixed_images, labels_a, labels_b, lam_actual, metadata`。`lam_actual` 为长度 N 的逐样本权重，metadata 提供最终 Mask、选定基础矩形与必要诊断；具体 schema 由 A/B/C/D 冻结。
+- 已采用返回 `mixed_images, labels_a, labels_b, lam_actual, metadata`。`lam_actual` 为长度 N 的逐样本权重；现有实现返回 Mask 等 metadata，B 的 PR 增加候选及边缘评分诊断。C 的路径与回退字段仍需对齐。
 - 所有方法共用一个训练循环。Source 从未被修改的原 batch 读取；坐标采用 `(top, left, bottom, right)` 半开区间，NCHW 切片为 `images[..., top:bottom, left:right]`。
 - 只在训练阶段混合；验证/测试使用干净输入。同一 Mask 定义同时服务图像替换、标签权重和边界诊断。
 
@@ -223,6 +262,7 @@ Sobel 与 RGB 接缝代价使用几何增强后、模型标准化前的输入；
 
 | 路径 | 内容 / 主要负责人 |
 | --- | --- |
+| `Baseline Implementation & Training Infrastructure (Member A)/` | 已上传的 A 基线代码、配置、划分、依赖与 E0/E1 日志 |
 | `docs/` | 原始说明、当前实验协议、CutMix 阅读记录 |
 | `models/`, `configs/`, `data/` | A：模型、配置、数据划分；D 核对协议 |
 | `augmentations/` | B：单／双侧边缘与候选；C：接缝评分、DP 与随机边界 |
@@ -233,9 +273,11 @@ Sobel 与 RGB 接缝代价使用几何增强后、模型标准化前的输入；
 | `report/`, `presentation/` | E：文献、报告、脚本、素材与视频 |
 | `third_party/` | 未修改的官方源码、LICENSE、NOTICE 与文件校验值 |
 
-目录中的交付文件名是开发计划。数据、checkpoint、大日志和视频使用共享存储并登记链接，不放入普通 Git 历史。
+除 A 的独立交付目录外，主分支顶层模块目前大多仍为用途说明；B 的根目录实现与结果位于 PR #1。尚未交付的文件名属于开发计划。数据、checkpoint、大日志和视频使用共享存储并登记链接，不放入普通 Git 历史。
 
 ## 6. 主实验前检查
+
+以下是全方法集成的验收清单，勾选代表整个项目已核对，不由 A/B 单阶段结果自动替代。阶段性证据见第 0 节；E0/E1 和 B 的边缘实验已有日志，E3/E4/E4-R 仍未交付。
 
 - [ ] A/D 冻结划分、seed、训练预算、优化器、学习率、精度与 checkpoint 规则。
 - [ ] A/B/C/D 冻结候选几何、采样粒度、归一化、返回值与 Mask 约定。
@@ -254,7 +296,7 @@ Sobel 与 RGB 接缝代价使用几何增强后、模型标准化前的输入；
 | [SmoothMix（CVPR Workshops 2020）](https://openaccess.thecvf.com/content_CVPRW_2020/html/w45/Lee_SmoothMix_A_Simple_Yet_Effective_Data_Augmentation_to_Train_Robust_CVPRW_2020_paper.html) | 通过软边缘混合处理强边界；本组候选方案保持二值硬边界并改变选区/路径 |
 | [Seam Carving（Avidan & Shamir, 2007）原文](https://www.cs.princeton.edu/courses/archive/fall07/cos597B/papers/avidan-seam-carving.pdf) | 内容感知缩放中的低代价路径思想；本组迁移其局部路径优化思路，不执行缩放 |
 
-本组探索的具体设计是：**轻量内容与接缝联合选区，以及局部受限的硬边界动态规划。** 它是待实现、待验证的研究方案；当前文档不保证未有相同已发表方法，也不预设准确率提升。E 应继续核对相关工作与引用，所有贡献声明以实际实现和实验为依据。
+本组探索的具体设计是：**轻量内容与接缝联合选区，以及局部受限的硬边界动态规划。** 内容引导阶段已有 B 的代码与单 seed 验证记录；接缝评分和 DP 部分仍待实现、待验证。当前文档不保证未有相同已发表方法，也不预设准确率提升。E 应继续核对相关工作与引用，所有贡献声明以实际实现和实验为依据。
 
 ## 8. 来源与许可
 
