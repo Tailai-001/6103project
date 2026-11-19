@@ -1,0 +1,38 @@
+CIFAR-100 train split: 20 batches x 128 = 2560 images
+
+== E3 seam_aware vs E2 dual_edge (K=4, gamma=0.5) ==
+ beta  changed vs E2  D_hat selected  raw RGB seam
+ 0.00           0.0%           5.093        0.3096
+ 0.25          42.4%           4.265        0.2596
+ 0.50          54.5%           4.094        0.2490
+ 1.00          62.3%           4.015        0.2441
+ 2.00          67.1%           3.987        0.2424
+
+== E4 seam_dp (beta=1, r=2, mu=0.05, min_width=2) ==
+budget  accept  area-fb  changed   D_hat E3->E4 (changed)  len E3->E4  bends  border snap
+  0.05   47.3%    52.6%    46.9%       4.019 -> 3.436  58.2->66.5  10.55        11.0%
+  0.10   73.4%    26.5%    73.0%       4.035 -> 3.440  58.6->65.7  10.09        14.7%
+  0.20   92.1%     7.9%    91.6%       4.060 -> 3.449  57.3->63.8   9.69        16.2%
+
+== E4 vs E4-R shape (budget 0.2), E4-R mu = seam_mu vs calibrated 0.225 ==
+arm               bends  length  |dA|/A  accept  D_hat
+E4 seam_dp         8.88    60.9   0.056   92.1%  3.455
+E4-R same mu      16.75    74.7   0.053   93.5%  4.295
+E4-R mu=0.225      9.18    67.0   0.057   91.3%  4.276
+
+== RandomCrop black padding (exact zeros) ==
+images with any black padding pixel: 98.8%
+policy                        seam pairs black|black  samples with such pairs
+E1 random                                       3.1%                    31.5%
+E2 dual_edge                                    4.9%                    28.9%
+E3 seam_aware b=1                               6.9%                    30.4%
+E3 seam_aware b=2                               6.8%                    29.5%
+E4 seam_dp                                      6.8%                    33.3%
+E4-R mu=0.225                                   6.3%                    32.7%
+
+policy                        raw seam (all pairs)  raw seam (no black|black)
+E1 random                                   0.3061                     0.3160
+E2 dual_edge                                0.3103                     0.3262
+E3 seam_aware b=1                           0.2484                     0.2667
+E4 seam_dp                                  0.2100                     0.2253
+E4-R mu=0.225                               0.2677                     0.2856
