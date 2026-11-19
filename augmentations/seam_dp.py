@@ -196,24 +196,42 @@ def edge_cost_table(source, target, boxes, side, radius, eps=1e-3, normalize=Tru
         scale = 0.5 * (image_seam_scale(source) + image_seam_scale(target))
         pair = pair / scale.clamp_min(eps)[:, None, None]
 
-    top, left, bottom, right = boxes.unbind(-1)
-    base = right if side == "right" else left
+    top = boxes[:, 0]
+    base = boxes[:, 3] if side == "right" else boxes[:, 1]
     offsets = torch.arange(-radius, radius + 1, device=dev)
     pos = base[:, None] + offsets[None, :]                             # [N, 2r+1]
-    lo, hi = (1, w) if side == "right" else (0, w - 1)
-    in_image = (pos >= lo) & (pos <= hi)
+    allowed, row_valid = edge_constraints(boxes, h, w, side, radius)
 
     i = torch.arange(h, device=dev)
-    row_valid = i[None, :] < (bottom - top)[:, None]                   # [N, H]
     img_row = (top[:, None] + i[None, :]).clamp(0, h - 1)              # [N, H]
     rows = pair.gather(1, img_row[..., None].expand(n, h, w + 1))      # [N,H,W+1]
     cols = pos.clamp(0, w)[:, None, :].expand(n, h, 2 * radius + 1)
     cost = rows.gather(2, cols)
-    allowed = in_image[:, None, :].expand(n, h, 2 * radius + 1) & row_valid[..., None]
-    cost = torch.where(allowed, cost, torch.zeros_like(cost))
-    # Padding rows stay "allowed" so the solver's pass-through is unconstrained.
-    allowed = allowed | ~row_valid[..., None]
+    cost = torch.where(allowed & row_valid[..., None], cost, torch.zeros_like(cost))
     return cost, allowed, row_valid
+
+
+def edge_constraints(boxes, height, width, side, radius):
+    """Image-bound constraints for one edge, independent of pixel values.
+
+    Returns allowed [N, H, 2r+1] (right edge X in [1, W], left edge L in
+    [0, W-1]; padding rows all True so the solver passes through them) and
+    row_valid [N, H] (True for table rows i < bottom - top). Shared by E4's
+    cost tables and E4-R's random tables, so both see identical constraints.
+    """
+    if side not in ("left", "right"):
+        raise ValueError("side must be 'left' or 'right'")
+    n, dev = boxes.shape[0], boxes.device
+    top, left, bottom, right = boxes.unbind(-1)
+    base = right if side == "right" else left
+    pos = base[:, None] + torch.arange(-radius, radius + 1, device=dev)[None, :]
+    lo, hi = (1, width) if side == "right" else (0, width - 1)
+    in_image = (pos >= lo) & (pos <= hi)                               # [N, 2r+1]
+    i = torch.arange(height, device=dev)
+    row_valid = i[None, :] < (bottom - top)[:, None]                   # [N, H]
+    allowed = (in_image[:, None, :].expand(n, height, 2 * radius + 1)
+               | ~row_valid[..., None])
+    return allowed, row_valid
 
 
 # Predecessor shifts (sa, sb) in tie-break order: straight, one edge moves,
@@ -406,9 +424,17 @@ def finalize_boundaries(boxes, left_off, right_off, feasible, height, width,
     rect = paths_to_mask(boxes, torch.zeros_like(left_off), torch.zeros_like(right_off),
                          height, width)
     changed = (mask != rect).flatten(1).any(1)
+    # Bends: total pixels of edge shift between consecutive box rows (both
+    # edges), a shape statistic for matching E4 against E4-R.
+    steps = ((left_off[:, 1:] - left_off[:, :-1]).abs()
+             + (right_off[:, 1:] - right_off[:, :-1]).abs())
+    step_valid = (torch.arange(steps.shape[1], device=dev)[None, :]
+                  < (box_h - 1)[:, None])
+    bends = (steps * step_valid).sum(1)
     return {"mask": mask, "left_offsets": left_off, "right_offsets": right_off,
             "status": status, "area_base": area_base,
-            "area_final": mask.flatten(1).sum(1), "changed": changed}
+            "area_final": mask.flatten(1).sum(1), "changed": changed,
+            "bends": bends}
 
 
 def optimize_boundaries(source, target, boxes, radius=2, mu=0.0, min_width=1,
@@ -423,9 +449,17 @@ def optimize_boundaries(source, target, boxes, radius=2, mu=0.0, min_width=1,
         seam_cost_base / seam_cost_raw_base / seam_count_base [N]: same for the
             E3 rectangle, for before/after diagnostics.
     """
-    h, w = source.shape[-2:]
     cl, al, rv = edge_cost_table(source, target, boxes, "left", radius, eps)
     cr, ar, _ = edge_cost_table(source, target, boxes, "right", radius, eps)
+    return _solve_and_finalize(source, target, boxes, cl, al, cr, ar, rv,
+                               mu, min_width, area_budget, eps)
+
+
+def _solve_and_finalize(source, target, boxes, cl, al, cr, ar, rv,
+                        mu, min_width, area_budget, eps):
+    """Shared tail of E4 and E4-R: joint DP on the given tables, the common
+    fallback rule, and full D_seam of the final mask and of the rectangle."""
+    h, w = source.shape[-2:]
     lo, ro, objective, feasible = solve_pair_dp(cl, al, cr, ar, boxes, mu, min_width, rv)
     out = finalize_boundaries(boxes, lo, ro, feasible, h, w, min_width, area_budget)
     d_hat, d_raw, count = normalized_seam_cost(source, target, out["mask"], eps)
@@ -438,34 +472,35 @@ def optimize_boundaries(source, target, boxes, radius=2, mu=0.0, min_width=1,
     return out
 
 
-def seam_dp_cutmix(images, labels, alpha=1.0, p=0.5, k=4, gamma=0.5, beta=0.0,
-                   seam_radius=2, seam_mu=0.0, min_width=2, area_budget=0.1,
-                   seam_eps=1e-3):
-    """E4 policy: E3 rectangle, then DP-optimised left/right edges.
+def reshape_e3_policy(images, labels, policy, reshape, alpha=1.0, p=0.5, k=4,
+                      gamma=0.5, beta=0.0, seam_radius=2, seam_mu=0.0,
+                      min_width=2, area_budget=0.1, seam_eps=1e-3, bend_mu=None):
+    """Shared E4 / E4-R wrapper: run E3, reshape its boxes, relabel by final mask.
 
-    Returns mixed_images, labels_a, labels_b, lam_actual[N], metadata, with
-    lam_actual computed from the FINAL mask. Metadata keeps all E3 fields
-    (candidate scores etc.) under their E3 names, except that "mask",
-    "policy" and the selected-box seam fields describe the final E4 mask;
-    E3's rectangle values are kept as "seam_cost_base" etc.
+    reshape(source, target, boxes) must return a _solve_and_finalize dict.
+    bend_mu records the bend penalty the reshape actually used (defaults to
+    seam_mu; E4-R may use its own calibrated value).
+    Metadata keeps all E3 fields under their E3 names, except that "mask",
+    "policy" and the selected-box seam fields describe the final mask; E3's
+    rectangle values are kept as "seam_cost_base" etc.
     """
     if isinstance(seam_radius, bool) or not isinstance(seam_radius, int) or seam_radius < 0:
         raise ValueError("seam_radius must be a nonnegative integer")
-    mixed, labels_a, labels_b, _, meta = seam_aware_cutmix(
+    _, labels_a, labels_b, _, meta = seam_aware_cutmix(
         images, labels, alpha, p, k, gamma, beta, seam_eps)
     perm, boxes = meta["permutation"], meta["boxes"]
-    out = optimize_boundaries(images[perm], images, boxes, seam_radius, seam_mu,
-                              min_width, area_budget, seam_eps)
+    out = reshape(images[perm], images, boxes)
     mask = out["mask"]
     mixed = torch.where(mask, images[perm], images)
     lam = (1 - mask.flatten(1).float().mean(1)).to(images.dtype)
     meta = dict(meta)
     meta.update({
-        "policy": "seam_dp", "mask": mask,
+        "policy": policy, "mask": mask,
         "seam_radius": seam_radius, "seam_mu": seam_mu,
+        "bend_mu": seam_mu if bend_mu is None else bend_mu,
         "min_width": min_width, "area_budget": area_budget,
         "dp_status": out["status"], "dp_changed": out["changed"],
-        "dp_objective": out["dp_objective"],
+        "dp_objective": out["dp_objective"], "bends": out["bends"],
         "left_offsets": out["left_offsets"], "right_offsets": out["right_offsets"],
         "area_base": out["area_base"], "area_final": out["area_final"],
         "seam_cost": out["seam_cost"], "seam_cost_raw": out["seam_cost_raw"],
@@ -475,3 +510,18 @@ def seam_dp_cutmix(images, labels, alpha=1.0, p=0.5, k=4, gamma=0.5, beta=0.0,
         "seam_count_base": out["seam_count_base"],
     })
     return mixed, labels_a, labels_b, lam, meta
+
+
+def seam_dp_cutmix(images, labels, alpha=1.0, p=0.5, k=4, gamma=0.5, beta=0.0,
+                   seam_radius=2, seam_mu=0.0, min_width=2, area_budget=0.1,
+                   seam_eps=1e-3):
+    """E4 policy: E3 rectangle, then DP-optimised left/right edges.
+
+    Returns mixed_images, labels_a, labels_b, lam_actual[N] (from the FINAL
+    mask) and metadata; see reshape_e3_policy for the metadata layout.
+    """
+    def reshape(source, target, boxes):
+        return optimize_boundaries(source, target, boxes, seam_radius, seam_mu,
+                                   min_width, area_budget, seam_eps)
+    return reshape_e3_policy(images, labels, "seam_dp", reshape, alpha, p, k, gamma,
+                             beta, seam_radius, seam_mu, min_width, area_budget, seam_eps)

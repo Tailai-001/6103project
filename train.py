@@ -71,6 +71,7 @@ def apply_augmentation(images, labels, aug_cfg):
         seam_mu=aug_cfg.get("seam_mu", 0.0),
         seam_min_width=aug_cfg.get("seam_min_width", 2),
         seam_area_budget=aug_cfg.get("seam_area_budget", 0.1),
+        seam_random_mu=aug_cfg.get("seam_random_mu", None),
     )
 
     n = images.size(0)

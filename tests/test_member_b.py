@@ -146,7 +146,7 @@ class MemberBTests(unittest.TestCase):
     def test_invalid_parameters(self):
         for kw in [{"k":0},{"k":1.5},{"k":True},{"alpha":0},{"p":2},{"gamma":float("nan")},{"gamma":-1}]:
             with self.assertRaises(ValueError): self.call(**kw)
-        with self.assertRaises(NotImplementedError): self.call("seam_random")
+        with self.assertRaises(ValueError): self.call("no_such_policy")
 
     @unittest.skipUnless(torch.cuda.is_available(), "CUDA unavailable")
     def test_cuda_device_dtype_and_degeneracy(self):
