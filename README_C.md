@@ -72,6 +72,22 @@ python scripts/member_c_cases_figure.py results/member_c/cases_cifar.png
 
 B 原有的 `python -m unittest discover -s tests` 只运行 B 的 unittest 风格测试；C 的测试为 pytest 风格，完整测试请用 `python -m pytest tests`。
 
+### 3.1 正式训练（GPU）
+
+在有 CUDA 的机器上，从仓库根目录一键运行（参照 B 的 `run_member_b.sh`，全部调用统一 `train.py`）：
+
+```bash
+bash scripts/run_member_c.sh                       # 测试 → 数据 → GPU 增强计时 → smoke → 5 epoch pilot → E3/E4/E4-R 各 200 epoch → 汇总
+C_ARMS="e4 e4r" bash scripts/run_member_c.sh       # 只跑部分 arm
+C_ARMS=e3 sbatch scripts/train_member_c.slurm      # SLURM：每个 arm 一个作业，singleton 保证依次运行
+```
+
+- 运行按顺序执行，每个作业开始前写入 `experiments/registry.csv`；已存在的 run 不会被覆盖，重跑请设 `C_RUN_SUFFIX`。正式运行要求训练/增强代码已提交（registry 记录 commit）。
+- 输出：`logs/c_{e3,e4,e4r}_k4_s42.csv`、`checkpoints/<run>/best.pth`、`results/member_c/aug_timing.json`（GPU 同步增强耗时）、`results/member_c/summary.{json,csv}`（只含验证集）。
+- `train.py` 不支持断点续训，SLURM `--time` 必须覆盖整次运行。
+
+**耗时估算（未实测，pilot 会打印实际值）**：B 在 A800 上 E2 K=4 每 epoch 约 12.8 s（200 epoch ≈ 43 min），其中增强约 14 ms/batch，主要是 kernel 启动开销。按本地 CPU 上增强调用的 aten 算子数（E2 ≈3.6k、E3 ≈4.0k、E4 ≈10.5k、E4-R ≈10.1k / batch）粗略外推，E3 ≈ 45 min、E4 和 E4-R 各 ≈ 1.2 h，三组合计约 3–3.5 h（A800 级 GPU、单进程）。较慢的 GPU 可能需要 1.5–3 倍时间。
+
 ## 4. 测试
 
 `tests/test_seam_utils.py`、`test_seam_aware.py`、`test_seam_dp.py`、`test_seam_dp_policy.py`、`test_seam_random.py`，覆盖：
