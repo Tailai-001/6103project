@@ -1,8 +1,9 @@
-"""Unified A/B augmentation API. C policies deliberately fail until implemented."""
+"""Unified A/B/C augmentation API. seam_dp/seam_random fail until implemented."""
 import torch
 from .cutmix import random_cutmix
 from .source_edge import source_edge_cutmix
 from .dual_edge import dual_edge_cutmix
+from .seam_aware import seam_aware_cutmix
 
 
 def cutmix_batch(images, labels, policy="none", alpha=1.0, p=0.5,
@@ -20,4 +21,6 @@ def cutmix_batch(images, labels, policy="none", alpha=1.0, p=0.5,
     if policy in ("source_edge", "dual_edge"):
         fn = source_edge_cutmix if policy == "source_edge" else dual_edge_cutmix
         return fn(images, labels, alpha, p, k, gamma)
+    if policy == "seam_aware":
+        return seam_aware_cutmix(images, labels, alpha, p, k, gamma, beta)
     raise NotImplementedError(f"Policy {policy!r} belongs to C and is not integrated")
