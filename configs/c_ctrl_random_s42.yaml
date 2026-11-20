@@ -1,0 +1,40 @@
+# E1 Original CutMix (policy random) on C's GPU as a same-hardware control; k/gamma are unused.
+# Member C. Single-change ablation / same-hardware control (seed 42). Everything not
+# listed below is identical to the main C configs and B's E2 config.
+
+experiment:
+  name: "c_ctrl_random_s42"
+  seed: 42
+
+data:
+  root: "data/cifar100"
+  split_dir: "data/splits"
+  batch_size: 128
+  num_workers: 4
+
+model:
+  name: "cifar_resnet18"
+  num_classes: 100
+
+training:
+  epochs: 200
+  checkpoint_interval: 10
+  optimizer: "sgd"
+  learning_rate: 0.1
+  momentum: 0.9
+  weight_decay: 0.0005
+  scheduler: "cosine"
+
+augmentation:
+  policy: "random"
+  alpha: 1.0
+  p: 0.5
+  k: 4
+  gamma: 0.5
+  beta: 0.0
+  seam_radius: 0
+  seam_mu: 0.0
+
+output:
+  checkpoint_dir: "checkpoints"
+  log_dir: "logs"

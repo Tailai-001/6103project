@@ -1,4 +1,4 @@
-"""Register and run C's jobs (E3 / E4 / E4-R) through the single training entry point.
+"""Register and run C's jobs (E3 / E4 / E4-R, controls, ablations) through the single training entry point.
 
 Adapted from B's scripts/member_b_suite.py: every job calls the shared train.py with a
 committed config, is recorded in experiments/registry.csv before it starts, and existing
@@ -20,11 +20,23 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-ARMS = {  # arm -> (experiment id, config stem)
-    "e3": ("E3", "c_seam_aware_k4_s42"),
-    "e4": ("E4", "c_seam_dp_k4_s42"),
-    "e4r": ("E4-R", "c_seam_random_k4_s42"),
+ARMS = {  # arm -> (experiment id, config stem, run name)
+    # main runs
+    "e3": ("E3", "c_seam_aware_k4_s42", "c_e3_k4_s42"),
+    "e4": ("E4", "c_seam_dp_k4_s42", "c_e4_k4_s42"),
+    "e4r": ("E4-R", "c_seam_random_k4_s42", "c_e4r_k4_s42"),
+    # same-hardware controls (C's GPU)
+    "ctrl_e2": ("E2 control", "c_ctrl_dual_edge_k4_s42", "c_ctrl_e2_k4_s42"),
+    "ctrl_e1": ("E1 control", "c_ctrl_random_s42", "c_ctrl_e1_s42"),
+    # single-change ablations around the main E3 / E4 settings
+    "e3_b05": ("E3 ablation", "c_abl_seam_aware_k4_b05_s42", "c_e3_b05_k4_s42"),
+    "e3_b2": ("E3 ablation", "c_abl_seam_aware_k4_b2_s42", "c_e3_b2_k4_s42"),
+    "e4_r1": ("E4 ablation", "c_abl_seam_dp_k4_r1_s42", "c_e4_r1_k4_s42"),
+    "e4_r3": ("E4 ablation", "c_abl_seam_dp_k4_r3_s42", "c_e4_r3_k4_s42"),
+    "e4_mu0": ("E4 ablation", "c_abl_seam_dp_k4_mu0_s42", "c_e4_mu0_k4_s42"),
+    "e4_mu02": ("E4 ablation", "c_abl_seam_dp_k4_mu02_s42", "c_e4_mu02_k4_s42"),
 }
+MAIN_ARMS = ["e3", "e4", "e4r"]
 FORMAL_EPOCHS = 200
 
 
@@ -40,7 +52,7 @@ def git_commit(root):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--phase", choices=["smoke", "pilot", "formal"], default="formal")
-    parser.add_argument("--arms", nargs="+", choices=list(ARMS), default=list(ARMS))
+    parser.add_argument("--arms", nargs="+", choices=list(ARMS), default=MAIN_ARMS)
     parser.add_argument("--suffix", default="")
     parser.add_argument("--dry-run", action="store_true", help="print the commands only")
     args = parser.parse_args()
@@ -58,7 +70,7 @@ def main():
         sys.exit("Uncommitted changes in training/augmentation code; commit before formal runs.")
 
     if args.phase == "formal":
-        jobs = [(f"c_{arm}_k4_s42", arm, []) for arm in args.arms]
+        jobs = [(ARMS[arm][2], arm, []) for arm in args.arms]
     else:
         extra = ["--epochs", "2", "--max-batches", "2"] if args.phase == "smoke" else ["--epochs", "5"]
         jobs = [(f"c_{args.phase}", "e4", extra)]
@@ -72,7 +84,7 @@ def main():
     for name, arm, extra in jobs:
         if args.suffix:
             name += "_" + args.suffix
-        experiment, stem = ARMS[arm]
+        experiment, stem, _ = ARMS[arm]
         config_path = f"configs/{stem}.yaml"
         cmd = [sys.executable, "-u", "-B", "train.py", "--config", config_path, "--run-name", name, *extra]
         if args.dry_run:
@@ -85,7 +97,9 @@ def main():
             raise FileExistsError(f"Existing run {name}; preserve it and pass a fresh --suffix")
 
         row = {k: "" for k in fields}
-        row.update(run_id=name, experiment=experiment, policy=stem.split("_k4")[0][2:], seed=42,
+        import yaml
+        policy = yaml.safe_load((root / config_path).read_text())["augmentation"]["policy"]
+        row.update(run_id=name, experiment=experiment, policy=policy, seed=42,
                    git_commit=commit, config_path=config_path, split_sha256=split_hash,
                    environment=f"checkpoints/{name}/environment.json", device=device_name,
                    started_at=datetime.now(timezone.utc).isoformat(), status="running",

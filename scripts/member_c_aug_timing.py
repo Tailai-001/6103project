@@ -17,7 +17,11 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from augmentations import cutmix_batch  # noqa: E402
 
-CONFIGS = ["b_dual_edge_k4_s42", "c_seam_aware_k4_s42", "c_seam_dp_k4_s42", "c_seam_random_k4_s42"]
+sys.path.insert(0, str(ROOT / "scripts"))
+from member_c_suite import ARMS  # noqa: E402
+
+# E2 reference plus every C arm (main, controls, ablations), in ARMS order, no duplicates.
+CONFIGS = list(dict.fromkeys(["b_dual_edge_k4_s42"] + [stem for _, stem, _ in ARMS.values()]))
 KEYS = {"alpha": "alpha", "p": "p", "k": "k", "gamma": "gamma", "beta": "beta",
         "seam_radius": "seam_radius", "seam_mu": "seam_mu", "seam_min_width": "seam_min_width",
         "seam_area_budget": "seam_area_budget", "seam_random_mu": "seam_random_mu"}

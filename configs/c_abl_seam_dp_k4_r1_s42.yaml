@@ -1,0 +1,42 @@
+# E4 seam_radius ablation: seam_radius=1 (main E4 uses r=2, mu=0.05).
+# Member C. Single-change ablation / same-hardware control (seed 42). Everything not
+# listed below is identical to the main C configs and B's E2 config.
+
+experiment:
+  name: "c_abl_seam_dp_k4_r1_s42"
+  seed: 42
+
+data:
+  root: "data/cifar100"
+  split_dir: "data/splits"
+  batch_size: 128
+  num_workers: 4
+
+model:
+  name: "cifar_resnet18"
+  num_classes: 100
+
+training:
+  epochs: 200
+  checkpoint_interval: 10
+  optimizer: "sgd"
+  learning_rate: 0.1
+  momentum: 0.9
+  weight_decay: 0.0005
+  scheduler: "cosine"
+
+augmentation:
+  policy: "seam_dp"
+  alpha: 1.0
+  p: 0.5
+  k: 4
+  gamma: 0.5
+  beta: 1.0
+  seam_radius: 1          # MUST be > 0, otherwise E4 silently equals E3
+  seam_mu: 0.05
+  seam_min_width: 2
+  seam_area_budget: 0.2   # 0.1 made ~26% of CIFAR samples fall back to the rectangle
+
+output:
+  checkpoint_dir: "checkpoints"
+  log_dir: "logs"
