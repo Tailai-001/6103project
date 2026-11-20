@@ -85,7 +85,7 @@ C_ARMS="ctrl_e2 ctrl_e1 e3_b05 e3_b2" C_SKIP_PILOT=1 C_AUTO_SHUTDOWN=1 bash scri
 C_ARMS="e4_r1 e4_r3 e4_mu0 e4_mu02" C_SKIP_SMOKE=1 C_SKIP_PILOT=1 C_AUTO_SHUTDOWN=1 bash scripts/run_member_c.sh
 ```
 
-可用 arm（定义见 `scripts/member_c_suite.py` 的 `ARMS`）：主实验 `e3 e4 e4r`；对照 `ctrl_e2`（E2 = E3 取 β=0）、`ctrl_e1`（原版 CutMix）；消融 `e3_b05 e3_b2`（β=0.5/2）、`e4_r1 e4_r3`（r=1/3）、`e4_mu0 e4_mu02`（μ=0/0.2）。训练结束后自动运行 `scripts/evaluate_member_c_val.py`：重新加载每个 `best.pth`，复核验证准确率与日志一致并计算 Macro-F1（与 B 的口径相同），结果写入 `results/member_c/checkpoint_validation.json`。`C_AUTO_SHUTDOWN=1` 时，脚本结束（无论成功或失败）会把结果打包到仓库上一级目录并执行 `shutdown`。
+可用 arm（定义见 `scripts/member_c_suite.py` 的 `ARMS`）：主实验 `e3 e4 e4r`；对照 `ctrl_e2`（E2 = E3 取 β=0）、`ctrl_e1`（原版 CutMix）；消融 `e3_b05 e3_b2`（β=0.5/2）、`e4_r1 e4_r3`（r=1/3）、`e4_mu0 e4_mu02`（μ=0/0.2）。训练结束后自动运行 `scripts/evaluate_member_c_val.py`：重新加载每个 `best.pth`，复核验证准确率与日志一致并计算 Macro-F1（与 B 的口径相同），结果写入 `results/member_c/checkpoint_validation.json`。`C_AUTO_SHUTDOWN=1` 时，脚本结束会把结果打包到仓库上一级目录；只有全部成功才执行 `shutdown`，失败时保留机器。任一组失败后不再启动后续组。
 
 - 运行按顺序执行，每个作业开始前写入 `experiments/registry.csv`；已存在的 run 不会被覆盖，重跑请设 `C_RUN_SUFFIX`。正式运行要求训练/增强代码已提交（registry 记录 commit）。
 - 输出：`logs/c_{e3,e4,e4r}_k4_s42.csv`、`checkpoints/<run>/best.pth`、`results/member_c/aug_timing.json`（GPU 同步增强耗时）、`results/member_c/summary.{json,csv}`（只含验证集）。

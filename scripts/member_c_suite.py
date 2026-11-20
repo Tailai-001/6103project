@@ -144,6 +144,10 @@ def main():
             print(f"Pilot E4: {per_epoch:.1f} s/epoch -> 200 epochs ~ {per_epoch * FORMAL_EPOCHS / 3600:.2f} h "
                   f"per E4 run (E4-R similar, E3 faster)", flush=True)
         codes.append(result.returncode)
+        if result.returncode != 0:
+            print(f"{name} failed (exit {result.returncode}); see logs/{name}.stdout.log. "
+                  f"Stopping; later arms were not started.", flush=True)
+            break
 
     if any(codes):
         raise SystemExit(next(c for c in codes if c))

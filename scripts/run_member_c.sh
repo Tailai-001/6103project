@@ -8,8 +8,8 @@
 #   C_RUN_SUFFIX     suffix for run names, required to re-run without overwriting
 #   C_SKIP_SMOKE     set to 1 to skip the smoke run  (it also runs only once per suffix)
 #   C_SKIP_PILOT     set to 1 to skip the 5-epoch pilot (it also runs only once per suffix)
-#   C_AUTO_SHUTDOWN  set to 1 to pack results and shut the machine down when the script
-#                    exits, whether it succeeded or failed (AutoDL: stops billing)
+#   C_AUTO_SHUTDOWN  set to 1 to pack results when the script exits and shut the machine
+#                    down ONLY if everything succeeded (a failure keeps the machine)
 #   C_MACHINE        label used in the results archive name (default: hostname)
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -29,7 +29,13 @@ finish() {
     # Logs, configs/environments, registry and results; .pth weights stay on the data disk.
     tar --exclude='*.pth' -czf "$archive" logs checkpoints experiments/registry.csv results/member_c \
         logs_run_member_c.txt 2>/dev/null || true
-    echo "== packed $(cd .. && pwd)/member_c_results_${MACHINE}.tar.gz; shutting down in 60 s (Ctrl+C to cancel)"
+    echo "== packed $(cd .. && pwd)/member_c_results_${MACHINE}.tar.gz"
+    if [ "$status" != 0 ]; then
+      # Never release the machine on failure: on AutoDL the GPU may be taken by someone else.
+      echo "== FAILED: NOT shutting down. Read logs/*.stdout.log, fix, then shut down by hand."
+      return
+    fi
+    echo "== all done; shutting down in 60 s (Ctrl+C to cancel)"
     # Ctrl+C during the wait cancels the shutdown instead of skipping ahead to it.
     if sleep 60; then shutdown; else echo "== shutdown cancelled"; fi
   fi
