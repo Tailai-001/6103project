@@ -1,0 +1,12 @@
+{"config": "b_dual_edge_k4_s42", "policy": "dual_edge", "p": 0.5, "augmentation_ms_per_batch": 12.949714362621307, "median_ms": 12.917410582304}
+{"config": "c_seam_aware_k4_s42", "policy": "seam_aware", "p": 0.5, "augmentation_ms_per_batch": 13.591025471687317, "median_ms": 13.390056788921356}
+{"config": "c_seam_dp_k4_s42", "policy": "seam_dp", "p": 0.5, "augmentation_ms_per_batch": 30.74871063232422, "median_ms": 30.42285144329071}
+{"config": "c_seam_random_k4_s42", "policy": "seam_random", "p": 0.5, "augmentation_ms_per_batch": 29.822129905223846, "median_ms": 29.435861855745316}
+{"config": "c_ctrl_dual_edge_k4_s42", "policy": "dual_edge", "p": 0.5, "augmentation_ms_per_batch": 12.656868249177933, "median_ms": 12.549199163913727}
+{"config": "c_ctrl_random_s42", "policy": "random", "p": 0.5, "augmentation_ms_per_batch": 11.12694926559925, "median_ms": 11.070288717746735}
+{"config": "c_abl_seam_aware_k4_b05_s42", "policy": "seam_aware", "p": 0.5, "augmentation_ms_per_batch": 14.615434482693672, "median_ms": 13.854648917913437}
+{"config": "c_abl_seam_aware_k4_b2_s42", "policy": "seam_aware", "p": 0.5, "augmentation_ms_per_batch": 13.645458221435547, "median_ms": 13.59555870294571}
+{"config": "c_abl_seam_dp_k4_r1_s42", "policy": "seam_dp", "p": 0.5, "augmentation_ms_per_batch": 30.670494437217712, "median_ms": 30.256487429142}
+{"config": "c_abl_seam_dp_k4_r3_s42", "policy": "seam_dp", "p": 0.5, "augmentation_ms_per_batch": 32.05211021006107, "median_ms": 31.08200803399086}
+{"config": "c_abl_seam_dp_k4_mu0_s42", "policy": "seam_dp", "p": 0.5, "augmentation_ms_per_batch": 30.89860625565052, "median_ms": 30.823025852441788}
+{"config": "c_abl_seam_dp_k4_mu02_s42", "policy": "seam_dp", "p": 0.5, "augmentation_ms_per_batch": 31.587737575173378, "median_ms": 30.592698603868484}

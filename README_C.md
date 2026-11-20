@@ -10,7 +10,7 @@ C 在 A 的训练框架与 B 的边缘选区（PR #1）之上实现 E3（`seam_a
 | 退化检查 β=0→E2、r=0→E3 | **已验证**（逐位一致） |
 | 三份配置在真实 CIFAR 上跑通 `train.py` | **已验证**：CPU、`--epochs 1 --max-batches 2` 冒烟，仅证明流程可运行 |
 | 真实 CIFAR 训练集上的增强行为诊断 | **已测**：见第 5 节，只描述增强本身（接缝、形状、回退），**不是分类结果** |
-| 200-epoch 训练与准确率 | **已完成**（seed 42、5k 验证集、RTX 4090）：E3 79.72%、E4 80.30%、E4-R 79.46%（最佳 Val Top-1）。单 seed、参数暂定、非测试集，详见 [RESULTS_C.md](results/member_c/RESULTS_C.md) |
+| 200-epoch 训练与准确率 | **已完成**（seed 42、5k 验证集、RTX 4090）：E3 79.72%、E4 80.30%、E4-R 79.46%（最佳 Val Top-1）。另有同硬件 E2/E1 对照和 β、r、μ 单因素消融共 8 组，均已完成并附 Macro-F1（E3/E4/E4-R 的 Macro-F1 待补）。单 seed、参数暂定、非测试集，详见 [RESULTS_C.md](results/member_c/RESULTS_C.md) |
 | β、r、μ、最小宽度、面积预算 | **暂定**：需与 D 在验证集上选定；E4 参数改动后须重新校准 `seam_random_mu` |
 
 开发环境：macOS CPU、Python 3.11、torch 2.9.1（CPU 版）、torchvision 0.24.1、numpy 1.26.4、PyYAML 6.0.2、pytest 8.4.2，与 A 锁定版本一致（A 使用 CUDA 版）。
