@@ -12,7 +12,7 @@
     "last10_mean_val_top1_percent": 79.524,
     "mean_epoch_seconds": 11.433424417339266,
     "sum_epoch_seconds": 2286.684883467853,
-    "val_macro_f1": "",
+    "val_macro_f1": 0.7961511057716237,
     "config": "configs/c_seam_aware_k4_s42.yaml",
     "augmentation": {
       "policy": "seam_aware",
@@ -38,7 +38,7 @@
     "last10_mean_val_top1_percent": 80.156,
     "mean_epoch_seconds": 13.902357182465494,
     "sum_epoch_seconds": 2780.4714364930987,
-    "val_macro_f1": "",
+    "val_macro_f1": 0.8024596432731477,
     "config": "configs/c_seam_dp_k4_s42.yaml",
     "augmentation": {
       "policy": "seam_dp",
@@ -66,7 +66,7 @@
     "last10_mean_val_top1_percent": 79.236,
     "mean_epoch_seconds": 13.946434139236807,
     "sum_epoch_seconds": 2789.2868278473616,
-    "val_macro_f1": "",
+    "val_macro_f1": 0.7927298027313319,
     "config": "configs/c_seam_random_k4_s42.yaml",
     "augmentation": {
       "policy": "seam_random",

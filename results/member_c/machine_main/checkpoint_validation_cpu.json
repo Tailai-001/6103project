@@ -1,0 +1,50 @@
+[
+  {
+    "run_id": "c_e3_k4_s42",
+    "experiment": "E3",
+    "config": "configs/c_seam_aware_k4_s42.yaml",
+    "split": "fixed_validation_only",
+    "samples": 5000,
+    "device": "cpu",
+    "num_workers": 2,
+    "evaluation_script_sha256": "62d92b7bb73907e901c621a0540138d1905aae6eec3c126284cad6406a51d0a3",
+    "checkpoint_epoch": 190,
+    "val_top1_percent": 79.72,
+    "val_macro_f1": 0.7961511057716237,
+    "val_loss": 0.7780776564121247,
+    "logged_accuracy_verified": true,
+    "logged_val_top1_percent": 79.72
+  },
+  {
+    "run_id": "c_e4_k4_s42",
+    "experiment": "E4",
+    "config": "configs/c_seam_dp_k4_s42.yaml",
+    "split": "fixed_validation_only",
+    "samples": 5000,
+    "device": "cpu",
+    "num_workers": 2,
+    "evaluation_script_sha256": "62d92b7bb73907e901c621a0540138d1905aae6eec3c126284cad6406a51d0a3",
+    "checkpoint_epoch": 199,
+    "val_top1_percent": 80.30000000000001,
+    "val_macro_f1": 0.8024596432731477,
+    "val_loss": 0.7599381354808807,
+    "logged_accuracy_verified": true,
+    "logged_val_top1_percent": 80.30000000000001
+  },
+  {
+    "run_id": "c_e4r_k4_s42",
+    "experiment": "E4-R",
+    "config": "configs/c_seam_random_k4_s42.yaml",
+    "split": "fixed_validation_only",
+    "samples": 5000,
+    "device": "cpu",
+    "num_workers": 2,
+    "evaluation_script_sha256": "62d92b7bb73907e901c621a0540138d1905aae6eec3c126284cad6406a51d0a3",
+    "checkpoint_epoch": 200,
+    "val_top1_percent": 79.44,
+    "val_macro_f1": 0.7927298027313319,
+    "val_loss": 0.775845850545168,
+    "logged_accuracy_verified": false,
+    "logged_val_top1_percent": 79.46
+  }
+]
