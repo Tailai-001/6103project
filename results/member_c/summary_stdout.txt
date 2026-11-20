@@ -1,0 +1,48 @@
+[
+  {
+    "run_id": "c_e3_k4_s42",
+    "experiment": "E3",
+    "policy": "seam_aware",
+    "seed": 42,
+    "epochs_logged": 200,
+    "best_val_top1_percent": 79.72,
+    "best_epoch": 190,
+    "val_loss_at_best": 0.7780665162444115,
+    "final_val_top1_percent": 79.6,
+    "mean_epoch_seconds": 11.433424417339266,
+    "sum_epoch_seconds": 2286.684883467853,
+    "log_path": "logs/c_e3_k4_s42.csv",
+    "checkpoint_path": "checkpoints/c_e3_k4_s42/best.pth"
+  },
+  {
+    "run_id": "c_e4_k4_s42",
+    "experiment": "E4",
+    "policy": "seam_dp",
+    "seed": 42,
+    "epochs_logged": 200,
+    "best_val_top1_percent": 80.3,
+    "best_epoch": 199,
+    "val_loss_at_best": 0.7599250441551209,
+    "final_val_top1_percent": 80.12,
+    "mean_epoch_seconds": 13.902357182465494,
+    "sum_epoch_seconds": 2780.4714364930987,
+    "log_path": "logs/c_e4_k4_s42.csv",
+    "checkpoint_path": "checkpoints/c_e4_k4_s42/best.pth"
+  },
+  {
+    "run_id": "c_e4r_k4_s42",
+    "experiment": "E4-R",
+    "policy": "seam_random",
+    "seed": 42,
+    "epochs_logged": 200,
+    "best_val_top1_percent": 79.46,
+    "best_epoch": 200,
+    "val_loss_at_best": 0.7758517797887325,
+    "final_val_top1_percent": 79.46,
+    "mean_epoch_seconds": 13.946434139236807,
+    "sum_epoch_seconds": 2789.2868278473616,
+    "log_path": "logs/c_e4r_k4_s42.csv",
+    "checkpoint_path": "checkpoints/c_e4r_k4_s42/best.pth"
+  }
+]
+NOTE: seed 42, validation split only; not test-set results, not a multi-seed mean.

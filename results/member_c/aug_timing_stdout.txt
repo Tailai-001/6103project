@@ -1,0 +1,4 @@
+{"config": "b_dual_edge_k4_s42", "policy": "dual_edge", "p": 0.5, "augmentation_ms_per_batch": 8.471766263246536, "median_ms": 8.415304124355316}
+{"config": "c_seam_aware_k4_s42", "policy": "seam_aware", "p": 0.5, "augmentation_ms_per_batch": 9.169086813926697, "median_ms": 8.989088237285614}
+{"config": "c_seam_dp_k4_s42", "policy": "seam_dp", "p": 0.5, "augmentation_ms_per_batch": 19.789031594991684, "median_ms": 19.84507590532303}
+{"config": "c_seam_random_k4_s42", "policy": "seam_random", "p": 0.5, "augmentation_ms_per_batch": 19.339934587478638, "median_ms": 19.269607961177826}

@@ -10,7 +10,7 @@ C 在 A 的训练框架与 B 的边缘选区（PR #1）之上实现 E3（`seam_a
 | 退化检查 β=0→E2、r=0→E3 | **已验证**（逐位一致） |
 | 三份配置在真实 CIFAR 上跑通 `train.py` | **已验证**：CPU、`--epochs 1 --max-batches 2` 冒烟，仅证明流程可运行 |
 | 真实 CIFAR 训练集上的增强行为诊断 | **已测**：见第 5 节，只描述增强本身（接缝、形状、回退），**不是分类结果** |
-| 200-epoch 训练与准确率 | **未做**：需要 A 在 GPU 上运行，本文档没有任何准确率结论 |
+| 200-epoch 训练与准确率 | **已完成**（seed 42、5k 验证集、RTX 4090）：E3 79.72%、E4 80.30%、E4-R 79.46%（最佳 Val Top-1）。单 seed、参数暂定、非测试集，详见 [RESULTS_C.md](results/member_c/RESULTS_C.md) |
 | β、r、μ、最小宽度、面积预算 | **暂定**：需与 D 在验证集上选定；E4 参数改动后须重新校准 `seam_random_mu` |
 
 开发环境：macOS CPU、Python 3.11、torch 2.9.1（CPU 版）、torchvision 0.24.1、numpy 1.26.4、PyYAML 6.0.2、pytest 8.4.2，与 A 锁定版本一致（A 使用 CUDA 版）。
@@ -80,13 +80,18 @@ B 原有的 `python -m unittest discover -s tests` 只运行 B 的 unittest 风�
 bash scripts/run_member_c.sh                       # 测试 → 数据 → GPU 增强计时 → smoke → 5 epoch pilot → E3/E4/E4-R 各 200 epoch → 汇总
 C_ARMS="e4 e4r" bash scripts/run_member_c.sh       # 只跑部分 arm
 C_ARMS=e3 sbatch scripts/train_member_c.slurm      # SLURM：每个 arm 一个作业，singleton 保证依次运行
+# 同硬件对照与单因素消融（configs/c_ctrl_*、c_abl_*，相对主设置只改一个参数）：
+C_ARMS="ctrl_e2 ctrl_e1 e3_b05 e3_b2" C_SKIP_PILOT=1 C_AUTO_SHUTDOWN=1 bash scripts/run_member_c.sh
+C_ARMS="e4_r1 e4_r3 e4_mu0 e4_mu02" C_SKIP_SMOKE=1 C_SKIP_PILOT=1 C_AUTO_SHUTDOWN=1 bash scripts/run_member_c.sh
 ```
+
+可用 arm（定义见 `scripts/member_c_suite.py` 的 `ARMS`）：主实验 `e3 e4 e4r`；对照 `ctrl_e2`（E2 = E3 取 β=0）、`ctrl_e1`（原版 CutMix）；消融 `e3_b05 e3_b2`（β=0.5/2）、`e4_r1 e4_r3`（r=1/3）、`e4_mu0 e4_mu02`（μ=0/0.2）。训练结束后自动运行 `scripts/evaluate_member_c_val.py`：重新加载每个 `best.pth`，复核验证准确率与日志一致并计算 Macro-F1（与 B 的口径相同），结果写入 `results/member_c/checkpoint_validation.json`。`C_AUTO_SHUTDOWN=1` 时，脚本结束（无论成功或失败）会把结果打包到仓库上一级目录并执行 `shutdown`。
 
 - 运行按顺序执行，每个作业开始前写入 `experiments/registry.csv`；已存在的 run 不会被覆盖，重跑请设 `C_RUN_SUFFIX`。正式运行要求训练/增强代码已提交（registry 记录 commit）。
 - 输出：`logs/c_{e3,e4,e4r}_k4_s42.csv`、`checkpoints/<run>/best.pth`、`results/member_c/aug_timing.json`（GPU 同步增强耗时）、`results/member_c/summary.{json,csv}`（只含验证集）。
 - `train.py` 不支持断点续训，SLURM `--time` 必须覆盖整次运行。
 
-**耗时估算（未实测，pilot 会打印实际值）**：B 在 A800 上 E2 K=4 每 epoch 约 12.8 s（200 epoch ≈ 43 min），其中增强约 14 ms/batch，主要是 kernel 启动开销。按本地 CPU 上增强调用的 aten 算子数（E2 ≈3.6k、E3 ≈4.0k、E4 ≈10.5k、E4-R ≈10.1k / batch）粗略外推，E3 ≈ 45 min、E4 和 E4-R 各 ≈ 1.2 h，三组合计约 3–3.5 h（A800 级 GPU、单进程）。较慢的 GPU 可能需要 1.5–3 倍时间。
+**实测耗时**（RTX 4090，单进程顺序运行）：E3 38.4 min、E4 46.6 min、E4-R 46.8 min，三组合计约 2.2 h；每 batch 增强耗时 E2 8.5 / E3 9.2 / E4 19.8 / E4-R 19.3 ms。见 [RESULTS_C.md](results/member_c/RESULTS_C.md)。
 
 ## 4. 测试
 
@@ -130,14 +135,14 @@ C_ARMS=e3 sbatch scripts/train_member_c.slurm      # SLURM：每个 arm 一个�
 
 **RandomCrop 黑边**（排除"黑对黑"像素对后的原始接缝差）：E1 0.316、E2 0.326、E3 0.267、E4 0.225、E4-R 0.286。
 
-解读边界：E3 与 E4 确实降低了接缝颜色跳变，E4-R 校准后拐弯数与 E4 对齐。**这些结果不能推出分类准确率提高**；更平滑的接缝也可能削弱人工接缝的正则化作用，必须以训练结果为准。
+解读边界：E3 与 E4 确实降低了接缝颜色跳变，E4-R 校准后拐弯数与 E4 对齐。**这些结果不能推出分类准确率提高**；更平滑的接缝也可能削弱人工接缝的正则化作用，必须以训练结果为准。200-epoch 训练结果见 [RESULTS_C.md](results/member_c/RESULTS_C.md)：E3 相对 E2 没有可见收益，E4 高于 E3 和 E4-R（单 seed）。
 
 ## 6. 给 A（训练与集成）
 
 1. 三份配置可直接用于 200-epoch 训练；E4-R 的 `seam_random_mu` 只对当前 E4 参数有效。
 2. 接缝参数确定后再启动正式 E4/E4-R；若先跑 E3，β 也属于待选参数。
 3. 本分支 `member-c-seam` 基于 PR #1（提交 `9562fdf`），对 B/A 共享文件只做了小改动：`augmentations/__init__.py` 接入三个 policy 并新增三个参数；`train.py` 新增三行读取 `seam_min_width`、`seam_area_budget`、`seam_random_mu`；`tests/test_member_b.py` 中原先断言"C 未实现"的一行改为断言未知 policy 报 `ValueError`。`README_B.md` 里"C 的 E3/E4 策略未实现"一句已过时，留待 B 更新。
-4. E4/E4-R 每个 batch 需要额外的 DP 计算。CPU 上 E3 约比 E2 多 60% 增强时间（batch 128、K=8 的合成数据粗测）；E4/E4-R 在 GPU 上的耗时尚未测量，需按协议预热并同步后计时。
+4. E4/E4-R 每个 batch 需要额外的 DP 计算。RTX 4090 上同步计时，E4 增强约 19.8 ms/batch，是 E2（8.5 ms）的 2.3 倍；实际训练每 epoch 多约 2.5 秒（见 RESULTS_C.md）。
 
 ## 7. 给 D（评价与协议）
 

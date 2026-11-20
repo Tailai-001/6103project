@@ -1,0 +1,4 @@
+run_id,experiment,policy,seed,epochs_logged,best_val_top1_percent,best_epoch,val_loss_at_best,final_val_top1_percent,mean_epoch_seconds,sum_epoch_seconds,log_path,checkpoint_path
+c_e3_k4_s42,E3,seam_aware,42,200,79.72,190,0.7780665162444115,79.6,11.433424417339266,2286.684883467853,logs/c_e3_k4_s42.csv,checkpoints/c_e3_k4_s42/best.pth
+c_e4_k4_s42,E4,seam_dp,42,200,80.3,199,0.7599250441551209,80.12,13.902357182465494,2780.4714364930987,logs/c_e4_k4_s42.csv,checkpoints/c_e4_k4_s42/best.pth
+c_e4r_k4_s42,E4-R,seam_random,42,200,79.46,200,0.7758517797887325,79.46,13.946434139236807,2789.2868278473616,logs/c_e4r_k4_s42.csv,checkpoints/c_e4r_k4_s42/best.pth

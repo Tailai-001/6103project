@@ -1,0 +1,33 @@
+{
+  "timestamp_utc": "2026-11-19T19:12:20.642457+00:00",
+  "python": "3.12.3",
+  "torch": "2.5.1+cu124",
+  "cuda_runtime": "12.4",
+  "device": "cuda",
+  "gpu": "NVIDIA GeForce RTX 4090",
+  "debug_max_batches": 2,
+  "platform": "Linux-5.15.0-25-generic-x86_64-with-glibc2.35",
+  "split_sha256": {
+    "train_indices.npy": "24520246ef0988e61bb0fe0f5c66da3a1f944be0569ccb5f0afc2536b92dfc15",
+    "val_indices.npy": "2c80060ed0fa8eba98b2023be25aa56794982c9d6bf762dd1eb29205835d67c2"
+  },
+  "source_sha256": {
+    "augmentations/__init__.py": "9e89714f8ebbf13018d966b9dc1ffa9882b16334131ae141e4c695cc77369bce",
+    "augmentations/candidates.py": "99aea80e8bfc0fa57d5b97b0fa375d751adc78c9b5b029b9f3a62ee285436ffe",
+    "augmentations/cutmix.py": "cbe13c7e0a32b5b9ba9223547715176a8a8f1c28416d08eb8b623f808bf6d390",
+    "augmentations/dual_edge.py": "b4088228b69c150880dc8114135a1ec2a9634ae467cbea818f927f23c4c4b4b8",
+    "augmentations/edge_utils.py": "df621eee3654dcb434b8763e7f2e5bb4b830bd7b9c155ef2cec2c13368ea1553",
+    "augmentations/seam_aware.py": "dc5dff59df8c180faa3eae379a4ba1adf145375f2ff8b4d5c7c91def6ed24fdd",
+    "augmentations/seam_dp.py": "9f60f3da2d3869aef5bce86f6857fbb3a5d69c381a372cda51b28e4fd1880c04",
+    "augmentations/seam_random.py": "c634c12b008e677202d297b8264924903fcffe4305303fa0552d1150ca77590e",
+    "augmentations/seam_utils.py": "f145d3b74eb2e15a22063c03f673ed111a90ac930bfde40988de17bd7889b324",
+    "augmentations/selection.py": "2de4b9cf443e8af12f07777ea0ec2a0d203c7c439a28831c8569a5900363fb34",
+    "augmentations/source_edge.py": "f4ea4f172f439230bb0efc2b4d7e2eb66dae0253bd8eeceb0621fbf69c59d1b9",
+    "models/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "models/resnet.py": "843910cadaa646474f7a32f90304ede7a873c00160fe9494384b68927a12a3ff",
+    "data/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "data/dataset.py": "a30b17289794c238106703642a6b51ea63b40a24c62cb2a87fbadf1952cbc523",
+    "data/split.py": "8793269d413a37348fa27fd239b533b98c925d24c1fab874d8be228474d10a7c"
+  },
+  "train_sha256": "1b422d16816bc7ea7492d2eee245c0f9d52159c2ee4986f7df4da83b7890db21"
+}
