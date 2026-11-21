@@ -1,5 +1,5 @@
 # 结果
 
-A 的原始 E0/E1 日志位于 `Baseline Implementation & Training Infrastructure (Member A)/results/baselines/`。B 的测试、图示、增强计时及实测汇总位于 `member_b/`，只有实际完成的运行才进入最终汇总。
+A 的原始 E0/E1 日志位于 `Baseline Implementation & Training Infrastructure (Member A)/results/baselines/`。B/C 的日志、诊断及复评证据分别位于 `member_b/` 和 `member_c/`。
 
-`tables/main_results.csv` 保留最终 test 指标模板；B 目前只做 validation，不向其中填入验证数值。模型 checkpoint 和完整运行日志保留在 GPU 项目目录，本地交付包含必要的小型日志与复现证据。
+D 整理的 [主表](tables/main_results.md) 含 18 个完整的单 seed 验证运行及各自环境。CSV 的官方测试字段暂空。诊断原始数据位于 `member_d/`，可用于正式报告的表、图和结论见 [RESULTS_D.md](../RESULTS_D.md)。

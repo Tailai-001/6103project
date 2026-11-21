@@ -1,0 +1,15 @@
+factor,run_id,experiment,machine,k,beta,radius,mu,best_val_top1_percent,last10_val_top1_mean_percent,val_macro_f1,augmentation_ms_per_batch,log_path
+K (edge-guided),b_dual_edge_k1_s42_seq,E1-equivalent,B-original,1,,,,80.06,79.796,0.7995569147549655,13.951475918293,results/member_b/raw_logs/b_dual_edge_k1_s42_seq.csv
+K (edge-guided),b_dual_edge_k4_s42_seq,E2,B-original,4,,,,79.64,79.524,0.7955626112767139,14.13564220070839,results/member_b/raw_logs/b_dual_edge_k4_s42_seq.csv
+K (edge-guided),b_source_edge_k4_s42_seq,E2-S,B-original,4,,,,80.36,80.2,0.8022936636936407,14.752925783395767,results/member_b/raw_logs/b_source_edge_k4_s42_seq.csv
+K (edge-guided),b_dual_edge_k8_s42_seq,E2,B-original,8,,,,79.62,79.284,0.7945754812692399,14.776594936847687,results/member_b/raw_logs/b_dual_edge_k8_s42_seq.csv
+K (edge-guided),b_source_edge_k8_s42_seq,E2-S,B-original,8,,,,79.3,79.066,0.7923526132471599,14.376496374607086,results/member_b/raw_logs/b_source_edge_k8_s42_seq.csv
+β (rectangle seam),c_e3_k4_s42,E3,C-main,4,1.0,,,79.72,79.524,0.7961511057716237,9.169086813926697,results/member_c/raw_logs/c_e3_k4_s42.csv
+β (rectangle seam),c_ctrl_e2_k4_s42,E2,C-A2,4,0.0,,,79.84,79.726,0.7976534597840896,10.548653658479452,results/member_c/raw_logs/c_ctrl_e2_k4_s42.csv
+β (rectangle seam),c_e3_b05_k4_s42,E3,C-A2,4,0.5,,,79.96,79.796,0.7980408497782797,11.00397290661931,results/member_c/raw_logs/c_e3_b05_k4_s42.csv
+β (rectangle seam),c_e3_b2_k4_s42,E3,C-A2,4,2.0,,,80.16,79.806,0.8004842110424424,11.060446705669165,results/member_c/raw_logs/c_e3_b2_k4_s42.csv
+r / μ (DP boundary),c_e4_k4_s42,E4,C-main,4,1.0,2,0.05,80.3,80.156,0.8024596432731477,19.789031594991684,results/member_c/raw_logs/c_e4_k4_s42.csv
+r / μ (DP boundary),c_e4_r1_k4_s42,E4,C-B,4,1.0,1,0.05,80.1,79.74,0.8001210479544588,30.670494437217712,results/member_c/raw_logs/c_e4_r1_k4_s42.csv
+r / μ (DP boundary),c_e4_r3_k4_s42,E4,C-B,4,1.0,3,0.05,80.52,80.408,0.8039590996210532,32.05211021006107,results/member_c/raw_logs/c_e4_r3_k4_s42.csv
+r / μ (DP boundary),c_e4_mu0_k4_s42,E4,C-B,4,1.0,2,0.0,79.92,79.75,0.7984983638494815,30.89860625565052,results/member_c/raw_logs/c_e4_mu0_k4_s42.csv
+r / μ (DP boundary),c_e4_mu02_k4_s42,E4,C-B,4,1.0,2,0.2,80.04,79.814,0.7994406734767219,31.587737575173378,results/member_c/raw_logs/c_e4_mu02_k4_s42.csv
