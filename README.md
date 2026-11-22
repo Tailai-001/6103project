@@ -8,7 +8,7 @@
 
 ## 0. 从这里开始
 
-本仓库是 AI6103 五人小组的**项目起始仓库**。A 已上传统一训练框架和 E0/E1 的 200-epoch 结果；B 的根目录集成实现和复现说明见 [README_B.md](README_B.md)。E3/E4 仍待 C 实现。下文描述待实现的方法和职责，不代表已验证的性能或原创性。
+本仓库是 AI6103 五人小组项目。当前集成分支已包含 A/B/C 的方法实现、18 个完整 200-epoch 运行，以及 D 的评价与结果分析。实际交付和证据限制见 [D 的结果说明](RESULTS_D.md) 与 [补充核查与同机确认实验](RESULTS_AUDIT.md)。各成员 PR 尚需合并至 main；下文的方法设计与分工不应当作训练结果。
 
 本版将原先的纯边缘选区方案扩展为“内容评分 + 接缝评分 + 局部边界优化”。**实验编号已更新：原双侧边缘方法归入新 E2，新 E3 表示接缝感知矩形选区，E4 表示动态规划边界优化。** 单侧边缘方法保留为 E2-S 消融，避免旧 E3 与新 E3 混用。
 
@@ -22,7 +22,7 @@ git clone https://github.com/Tailai-001/6103project.git
 cd 6103project
 ```
 
-项目级 `train.py` 已复用 A 的统一训练循环，支持 none/random/source_edge/dual_edge，安装与训练命令见 README_B.md。`evaluate.py` 仍由 D 负责。`third_party/CutMix-PyTorch/train.py` 是历史参考源码，不能当作本组完成版。
+项目级 `train.py` 复用 A 的统一训练循环，支持 `none/random/source_edge/dual_edge/seam_aware/seam_dp/seam_random`。安装与训练说明见 [README_B.md](README_B.md)、[RESULTS_C.md](RESULTS_C.md)；D 的统一评价入口为 [evaluate.py](evaluate.py)。`third_party/CutMix-PyTorch/train.py` 为保持原样的历史参考源码。
 
 ## 1. 原论文、研究问题与预期方案
 

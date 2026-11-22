@@ -1,5 +1,7 @@
 # Member D｜Evaluation & Experimental Analysis
 
+后续独立核查、接缝敏感性分析与本机同机三臂复核见 [补充核查](RESULTS_AUDIT.md)。下文保留 D 原交付的 18 次 seed-42 结果，新增运行另表列出。
+
 共汇总 18 个完整的 200-epoch 正式运行（A 2、B 5、C 11）。模型为 CIFAR 版四阶段 ResNet-18，CIFAR-100 使用固定 45,000/5,000 分层训练／验证划分，所有现有正式结果为 **seed 42**。Best Validation Top-1 取训练日志最大值，同分取最早 epoch。Last-10-Epoch Mean 为第 191–200 轮的平均值。Macro-F1 来自重新加载最佳 checkpoint 后的干净验证结果。
 
 ## 三个研究问题
