@@ -1,6 +1,8 @@
 # 阶段 B：Edge-Guided Selection
 
-B 在 A 上传的 CIFAR-100 / ResNet-18 框架上实现 E2（dual_edge）和 E2-S（source_edge）。根目录 `train.py`、`data/`、`models/` 是 A 框架的集成入口，优化器、模型、数据增强、归一化及训练循环保持 A 逻辑；训练新增源码和划分 SHA-256 记录。B 配置将 last checkpoint 间隔设为 10 epoch（最终 epoch 必存），减少个人 NAS 目录的写入；best checkpoint 仍在每次验证准确率严格提高时保存，选择规则不变。保存采用同目录临时文件加原子替换，A 默认配置的间隔仍为 1。A 的原始交付目录与 CSV 保留不动。C 的 E3/E4 策略未实现，调用时明确抛错。
+本文件保留 B 阶段的方法和实验记录。当前交付已集成全部七种 policy，安装、完整测试和运行命令以根 [README](README.md) 为准；补充同机实验见 [RESULTS_AUDIT.md](RESULTS_AUDIT.md)。
+
+B 在 A 上传的 CIFAR-100 / ResNet-18 框架上实现 E2（dual_edge）和 E2-S（source_edge）。根目录 `train.py`、`data/`、`models/` 是 A 框架的集成入口，优化器、模型、数据增强、归一化及训练循环保持 A 逻辑；训练新增源码和划分 SHA-256 记录。B 配置将 last checkpoint 间隔设为 10 epoch（最终 epoch 必存），减少个人 NAS 目录的写入；best checkpoint 仍在每次验证准确率严格提高时保存，选择规则不变。保存采用同目录临时文件加原子替换，A 默认配置的间隔仍为 1。A 的原始交付目录与 CSV 保留不动。C 的 E3/E4/E4-R 策略现已接入同一训练入口，详见 README_C.md。
 
 ## 完成状态与实测结果
 
@@ -10,7 +12,7 @@ B 的 17 项远端 CPU/CUDA 检查全部通过，5 组 200-epoch 正式实验全
 
 ## 运行
 
-建议 Python 3.10+、torch 2.5.1、torchvision 0.20.1、numpy 1.26.4、PyYAML、matplotlib。实际运行环境见结果目录 `requirements-portable.txt`（含私人路径的原始 freeze 仅保留在本地完整交付包）；CUDA 驱动需要匹配。
+当前交付建议 Python 3.11、torch 2.5.1、torchvision 0.20.1、numpy 1.26.4、PyYAML、matplotlib。实际运行环境见结果目录 `requirements-portable.txt`（含私人路径的原始 freeze 仅保留在本地完整交付包）；CUDA 驱动需要匹配。
 
 ```bash
 export B_ALLOWED_ROOT="$PWD"  # 当前项目须位于你获准写入的目录
@@ -21,8 +23,8 @@ export MPLCONFIGDIR="$PWD/cache/matplotlib" TRITON_CACHE_DIR="$PWD/cache/triton"
 export TORCHINDUCTOR_CACHE_DIR="$PWD/cache/inductor" PYTHONDONTWRITEBYTECODE=1
 python -B -m venv .venv
 source .venv/bin/activate
-python -m pip install --no-compile -r requirements.txt
-python -m unittest discover -s tests -v
+python -m pip install --no-compile -r requirements-dev.txt
+python -m pytest -q
 # 只在训练集归档中读取 train；不使用官方 test 作开发和调参
 python -c 'from torchvision.datasets import CIFAR100; CIFAR100("data/cifar100", train=True, download=True)'
 python train.py --config configs/b_dual_edge_k4_s42.yaml --run-name unique_e2_run

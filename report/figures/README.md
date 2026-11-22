@@ -1,3 +1,5 @@
-# 报告图示
+# Report figure sources
 
-收录最终报告采用的图，并注明来自哪个实验或可视化脚本。复用第三方图时保留来源和适用许可说明。
+The public scientific figures are under [results/figures](../../results/figures/README.md), with additional paired examples and diagnostics in `results/member_b/`, `results/member_c/` and `results/local_audit/`.
+
+Run `python analysis/reproduce_results.py --out-dir outputs/reproduced` from the root to rebuild validation curves, synchronized cost figures, boundary distributions and confirmation curves from committed evidence. Actual-image visualizations require the original CIFAR-100 inputs. Keep citations on any reused third-party illustration.

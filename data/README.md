@@ -1,5 +1,9 @@
-# 数据
+# Data and the fixed split
 
-`dataset.py` 与 `split.py` 原样复用 A。训练只从 CIFAR-100 官方训练集按 A 保存的固定索引划分 45,000/5,000，ToTensor 前训练使用 RandomCrop/Flip，模型标准化在可选混合后执行。验证仅 ToTensor，不做混合。
+`dataset.py` is the integrated A loader: 45,000/5,000 images from the official CIFAR-100 training partition, random crop/flip only for training, and RGB tensors in [0,1]. Model normalization happens after mixing in the shared trainer. Validation has no mixing or random transform.
 
-原始数据存放 `data/cifar100/`，由 `.gitignore` 排除。B 的 GPU 工作副本已下载并核验官方归档 MD5；不提交原始图像。测试集不用于 B 的训练、调参或 checkpoint 选择。固定索引和校验值见 splits/README.md。
+Run `python scripts/prepare_data.py --download` from the root to explicitly obtain the official archive and verify split hashes and per-class counts. An existing archive can be checked with `--data-root /path/to/cifar100`; without `--download`, nothing is downloaded. Raw images remain excluded from Git.
+
+`split.py` now validates the supplied indices without rewriting them and needs no scikit-learn. Run `python -m data.split` to check them without a dataset. The original generation script remains unchanged in the A archive. [Hashes and split details](splits/README.md) · [Complete running guide](../docs/running.md).
+
+The official test partition has not been used for the reported measurements.

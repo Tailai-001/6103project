@@ -1,12 +1,13 @@
-# 结果分析（D）
+# Result reproduction and evidence analysis
 
-[交接说明](../RESULTS_D.md) 链接全部报告表格、图和复现命令。
+The portable entry point is **`python analysis/reproduce_results.py --out-dir outputs/reproduced`**, run from the root. It reads committed evidence, regenerates the original 18-run table, three local confirmation summaries, boundary/efficiency tables and four plots, and records input hashes. It neither trains nor requires datasets or checkpoints, and writes outside the evidence tree.
 
-- `compile_results.py` 从 A/B/C 原始日志、配置、运行登记、checkpoint 复评与计时记录生成主表、消融、收敛曲线和效率图。
-- `boundary_audit.py` 沿用 C 的配对样本诊断设计和统一增强接口，追踪真实 RandomCrop 填充，重算最终掩码的 RGB 差异、面积、边界长度、拐弯与回退。诊断范围是固定训练划分。
-- `plot_boundary.py` 从审计 CSV/JSON 生成边界表和分布图。无可用内部接缝按 N/A 计。
-- 根目录 `evaluate.py` 复用 C 的评价指标计算，默认固定验证集，可显式选择官方测试集。
-- `audit_training_evidence.py` 独立核对 18 份正式日志、已存配置与历史源码哈希。
-- `paired_boundary_evidence.py` 对 D 的原始逐图 CSV 做配对 batch bootstrap 和填充／贴边／形状敏感性分析；`plot_paired_boundary_evidence.py` 生成对应图。区间不能用于推断分类性能。
-- 本地同机三臂复核与新增测试见 [RESULTS_AUDIT.md](../RESULTS_AUDIT.md)。
-- `compile_local_confirmation.py` 在三组全部完成后检查冻结配置、源码、完整日志与划分，独立在 CPU 加载最佳 checkpoint 复评，导出小型日志、指标、配对预测与曲线。只用验证集。
+- `compile_results.py`: original A/B/C formal logs, settings, recorded checkpoint metrics, ablations, curves and synchronized costs. Its functions accept separate output directories.
+- `plot_boundary.py`: D's raw paired audit CSV and summary, including validity-mask padding exclusions, final areas, boundary lengths and fallbacks.
+- `audit_training_evidence.py`: checks the 18 original runs and their historical Git source hashes; requires full Git history.
+- `paired_boundary_evidence.py`: paired batch bootstrap and padding/edge/shape sensitivity from the public CSV. These intervals do not measure classifier or seed uncertainty.
+- `plot_paired_boundary_evidence.py`: plots those paired diagnostic intervals.
+- `boundary_audit.py`: regenerates actual mixed-image diagnostics from an available dataset through the unified augmentation API.
+- `compile_local_confirmation.py`: original checkpoint-based compilation of the completed same-host experiment. It requires its local checkpoints; the portable reproducer instead verifies the public logs and saved validation predictions.
+
+[Integrated D analysis](../RESULTS_D.md) · [Independent audit](../RESULTS_AUDIT.md) · [Running guide](../docs/running.md).

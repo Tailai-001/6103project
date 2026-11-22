@@ -164,9 +164,9 @@ def format_value(value, decimals=2):
     return "N/A" if value is None else f"{value:.{decimals}f}"
 
 
-def write_tables(runs):
+def write_tables(runs, table_dir=TABLES):
     rows = [r for r, _ in runs]
-    write_csv(TABLES / "main_results.csv", rows)
+    write_csv(table_dir / "main_results.csv", rows)
     text = [
         "# Main results", "",
         "CIFAR-100, fixed 45,000/5,000 train/validation split, seed 42, 200 epochs. Top-1 values are validation percentages.",
@@ -185,7 +185,7 @@ def write_tables(runs):
                     f'{seconds / 60:.2f} | {format_value(row["augmentation_ms_per_batch"])} |')
     text += ["", "C-main E4-R was 79.46% in the training log and 79.44% in CPU checkpoint re-evaluation (one image).",
              "The table uses the training-log Top-1. Official test scores have not been measured in this handoff."]
-    (TABLES / "main_results.md").write_text("\n".join(text) + "\n", encoding="utf-8")
+    (table_dir / "main_results.md").write_text("\n".join(text) + "\n", encoding="utf-8")
 
     designs = [
         ("K (edge-guided)", lambda r: r["source"] == "B"),
@@ -197,7 +197,7 @@ def write_tables(runs):
         "best_val_top1_percent", "last10_val_top1_mean_percent", "val_macro_f1",
         "augmentation_ms_per_batch", "log_path",
     )}) for label, include in designs for row in rows if include(row)]
-    write_csv(TABLES / "d_ablation.csv", ablations)
+    write_csv(table_dir / "d_ablation.csv", ablations)
     out = ["# Ablations", "",
            "Seed 42, fixed validation split. Keep machine labels when comparing rows. C-A2 E2 is the β=0 reference.",
            "The r=3 row was selected after viewing these validation runs.", "",
@@ -207,15 +207,15 @@ def write_tables(runs):
         settings = " | ".join("—" if row[k] is None else str(row[k]) for k in ("k", "beta", "radius", "mu"))
         out.append(f'| {row["factor"]} | `{row["run_id"]}` | {row["machine"]} | {settings} | '
                    f'{row["best_val_top1_percent"]:.2f} | {row["last10_val_top1_mean_percent"]:.2f} | {row["val_macro_f1"]:.4f} |')
-    (TABLES / "d_ablation.md").write_text("\n".join(out) + "\n", encoding="utf-8")
+    (table_dir / "d_ablation.md").write_text("\n".join(out) + "\n", encoding="utf-8")
 
 
-def plot_report(runs):
+def plot_report(runs, table_dir=TABLES, figure_dir=FIGURES):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
 
-    FIGURES.mkdir(parents=True, exist_ok=True)
+    figure_dir.mkdir(parents=True, exist_ok=True)
     figure, panels = plt.subplots(2, 2, sharex=True, sharey=True, figsize=(11.5, 7), layout="constrained")
     for panel, host, title in zip(panels.flat, ("A-original", "B-original", "C-main", "C-A2"),
                                   ("A · A40", "B · A800", "C-main · RTX 4090", "C-A2 · separate RTX 4090")):
@@ -231,7 +231,7 @@ def plot_report(runs):
     figure.supxlabel("Epoch")
     figure.supylabel("Clean validation Top-1 (%)")
     figure.suptitle("CIFAR-100 · fixed validation split · seed 42")
-    figure.savefig(FIGURES / "d_validation_curves.png", dpi=170)
+    figure.savefig(figure_dir / "d_validation_curves.png", dpi=170)
     plt.close(figure)
 
     times = timing(C / "aug_timing.json")
@@ -245,7 +245,7 @@ def plot_report(runs):
                     augmentation_ms_per_batch=a2_times[key],
                     source="results/member_c/machine_A2/aug_timing.json")
                for method, key in zip(("E1", "E2", "E3", "E4", "E4-R"), a2_keys)]
-    write_csv(TABLES / "d_efficiency.csv", timing_rows + a2_rows)
+    write_csv(table_dir / "d_efficiency.csv", timing_rows + a2_rows)
     rows = {r["experiment"]: r for r, _ in runs if r["machine"] == "C-main"}
     figure, (left, right) = plt.subplots(1, 2, figsize=(10, 4), layout="constrained")
     values = [r["augmentation_ms_per_batch"] for r in timing_rows]
@@ -259,7 +259,7 @@ def plot_report(runs):
     for ax in (left, right):
         ax.grid(axis="y", alpha=0.2)
     figure.suptitle("C-main · same RTX 4090 host")
-    figure.savefig(FIGURES / "d_efficiency.png", dpi=170)
+    figure.savefig(figure_dir / "d_efficiency.png", dpi=170)
     plt.close(figure)
 
 

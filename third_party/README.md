@@ -20,4 +20,4 @@
 
 这份快照是研究参考，不代表已经在本项目验证可运行。适配工作应写到顶层项目模块，标注来源并保留适用许可；不要直接改动快照后仍声称它未修改。
 
-主要适配项：`np.int` 等历史接口、硬编码 CUDA、独立验证集、四 stage CIFAR ResNet-18，以及更清楚的 CutMix 参数命名。详细说明见根 [README](../README.md#43-官方代码不能直接当作本组完成版)。
+主要适配项：`np.int` 等历史接口、硬编码 CUDA、独立验证集、四 stage CIFAR ResNet-18，以及更清楚的 CutMix 参数命名。当前统一运行命令见根 [README](../README.md)，完整适配来源见 [NOTICE.md](../NOTICE.md)；`python scripts/verify_repository.py` 会核对本快照的逐文件哈希。

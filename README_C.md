@@ -1,5 +1,7 @@
 # 阶段 C：Seam Selection & Boundary Optimization
 
+本文件保留 C 阶段的实现、11 组训练和早期诊断记录。当前配置已按实际运行值保留；当前统一入口、完整检查和已完成的同机 seed-43 复核见根 [README](README.md) 与 [RESULTS_AUDIT.md](RESULTS_AUDIT.md)。第 6–7 节的原阶段协作建议不表示交付仍待集成。
+
 C 在 A 的训练框架与 B 的边缘选区（PR #1）之上实现 E3（`seam_aware`）、E4（`seam_dp`）和 E4-R（`seam_random`）。三者共用 B 的候选矩形、Sobel 分数、同分规则与 A 的统一训练入口，不另写训练循环。
 
 ## 0. 状态（请先读）
@@ -10,8 +12,8 @@ C 在 A 的训练框架与 B 的边缘选区（PR #1）之上实现 E3（`seam_a
 | 退化检查 β=0→E2、r=0→E3 | **已验证**（逐位一致） |
 | 三份配置在真实 CIFAR 上跑通 `train.py` | **已验证**：CPU、`--epochs 1 --max-batches 2` 冒烟，仅证明流程可运行 |
 | 真实 CIFAR 训练集上的增强行为诊断 | **已测**：见第 5 节，只描述增强本身（接缝、形状、回退），**不是分类结果** |
-| 200-epoch 训练与准确率 | **已完成**（seed 42、5k 验证集、RTX 4090）：E3 79.72%、E4 80.30%、E4-R 79.46%（最佳 Val Top-1）。另有同硬件 E2/E1 对照和 β、r、μ 单因素消融共 8 组，均已完成；全部 11 组都有 Macro-F1。单 seed、参数暂定、非测试集，详见 [RESULTS_C.md](results/member_c/RESULTS_C.md) |
-| β、r、μ、最小宽度、面积预算 | **暂定**：需与 D 在验证集上选定；E4 参数改动后须重新校准 `seam_random_mu` |
+| 200-epoch 训练与准确率 | **已完成**（seed 42、5k 验证集、RTX 4090）：E3 79.72%、E4 80.30%、E4-R 79.46%（最佳 Val Top-1）。另有同硬件 E2/E1 对照和 β、r、μ 单因素消融共 8 组，均已完成；全部 11 组都有 Macro-F1。单 seed、记录的实验参数、非测试集，详见 [RESULTS_C.md](results/member_c/RESULTS_C.md) |
+| β、r、μ、最小宽度、面积预算 | **已记录**：主配置已用于正式实验，不声称全局最优；E4 参数改动后须重新校准 `seam_random_mu` |
 
 开发环境：macOS CPU、Python 3.11、torch 2.9.1（CPU 版）、torchvision 0.24.1、numpy 1.26.4、PyYAML 6.0.2、pytest 8.4.2，与 A 锁定版本一致（A 使用 CUDA 版）。
 
@@ -50,7 +52,7 @@ E3 metadata 在 E2 字段之外增加 `edge_scores`、`seam_costs`/`seam_costs_r
 
 ## 3. 配置与运行
 
-| 配置 | policy | 增强参数（暂定） |
+| 配置 | policy | 实际记录的增强参数 |
 | --- | --- | --- |
 | `configs/c_seam_aware_k4_s42.yaml` | E3 | K=4、γ=0.5、β=1.0 |
 | `configs/c_seam_dp_k4_s42.yaml` | E4 | 同上 + r=2、μ=0.05、min_width=2、area_budget=0.2 |
@@ -140,8 +142,8 @@ C_ARMS="e4_r1 e4_r3 e4_mu0 e4_mu02" C_SKIP_SMOKE=1 C_SKIP_PILOT=1 C_AUTO_SHUTDOW
 ## 6. 给 A（训练与集成）
 
 1. 三份配置可直接用于 200-epoch 训练；E4-R 的 `seam_random_mu` 只对当前 E4 参数有效。
-2. 接缝参数确定后再启动正式 E4/E4-R；若先跑 E3，β 也属于待选参数。
-3. 本分支 `member-c-seam` 基于 PR #1（提交 `9562fdf`），对 B/A 共享文件只做了小改动：`augmentations/__init__.py` 接入三个 policy 并新增三个参数；`train.py` 新增三行读取 `seam_min_width`、`seam_area_budget`、`seam_random_mu`；`tests/test_member_b.py` 中原先断言"C 未实现"的一行改为断言未知 policy 报 `ValueError`。`README_B.md` 里"C 的 E3/E4 策略未实现"一句已过时，留待 B 更新。
+2. 本节原为阶段交接建议；正式 E3/E4/E4-R 与相关消融均已完成，复现请使用已记录的 YAML。
+3. 本分支 `member-c-seam` 基于 PR #1（提交 `9562fdf`），对 B/A 共享文件只做了小改动：`augmentations/__init__.py` 接入三个 policy 并新增三个参数；`train.py` 新增三行读取 `seam_min_width`、`seam_area_budget`、`seam_random_mu`；`tests/test_member_b.py` 中原先断言"C 未实现"的一行改为断言未知 policy 报 `ValueError`。`README_B.md` 的交付状态现已同步更新。
 4. E4/E4-R 每个 batch 需要额外的 DP 计算。RTX 4090 上同步计时，E4 增强约 19.8 ms/batch，是 E2（8.5 ms）的 2.3 倍；实际训练每 epoch 多约 2.5 秒（见 RESULTS_C.md）。
 
 ## 7. 给 D（评价与协议）
@@ -155,7 +157,7 @@ C_ARMS="e4_r1 e4_r3 e4_mu0 e4_mu02" C_SKIP_SMOKE=1 C_SKIP_PILOT=1 C_AUTO_SHUTDOW
 
 ## 8. 局限与待定
 
-- 所有结论均为单 seed、增强层面的诊断；没有训练结果，不声称性能提升或统计显著性。
+- 第 5 节数值属于早期增强诊断；正式分类结果已在 RESULTS_C.md 中记录。补充同机复核不支持稳定的分类提升，不声称统计显著性。
 - DP 只对左右两侧的局部代价精确最优，上下边和拐弯连接不在目标内。
 - 面积约束为求解后检查并回退，而非在 DP 中强制；若最终参数下回退率仍高，可考虑把累计面积纳入 DP 状态。
 - E4-R 用一个参数无法同时对齐拐弯数、边界长度与接受率。

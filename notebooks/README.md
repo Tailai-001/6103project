@@ -1,3 +1,3 @@
-# 探索笔记
+# Optional exploration
 
-可用于选区可视化和案例分析。正式训练与评价逻辑应放可复现的项目模块，提交 notebook 前清除大输出和个人路径。
+No notebook is required for installation, training, evaluation or evidence reproduction. The maintained entry points are the root Python commands in the [README](../README.md), with analysis code under `analysis/`. Any future exploratory notebooks should call those modules and omit large outputs and personal paths.

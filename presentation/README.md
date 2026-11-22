@@ -1,5 +1,7 @@
-# 展示与视频（E）
+# Project presentation
 
-后续放脚本、幻灯片和素材说明。原始项目说明要求视频不超过 5 分钟；提交前对照课程官方要求。
+The English seven-slide presentation and matching spoken script are supplied separately with the course submission. The narration targets about 4 minutes 30 seconds, with a five-minute upper limit. They are not dependencies for running the code.
 
-建议顺序：问题 → 原始 CutMix → 内容与接缝选区 E2/E3 → 局部 DP 边界 E4 与随机边界对照 E4-R → 公平对照与成本 → 结论/局限。用相同图像对展示矩形、弯曲 Mask 与实际面积，解释从拼接/Seam Carving 迁移的思想。当前没有成品视频；大视频使用共享存储并登记链接。
+The presentation covers CutMix (ICCV 2019), the content-plus-seam design, constrained DP and its random-boundary control, paired examples, boundary measurements, classification and the lesson that pixel smoothness alone may not determine augmentation benefit. Dataset-resolution and semantic explanations remain hypotheses.
+
+Public numeric sources and reusable plots are in [results](../results/README.md). [Asset provenance](assets/README.md) · [Running guide](../docs/running.md).

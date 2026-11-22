@@ -1,7 +1,9 @@
-# 正确性检查
+# Correctness and integration tests
 
-运行 `python -m unittest discover -s tests -v`。`test_member_b.py` 覆盖已知 ramp 的 Sobel、常量图、integral image 对照暴力区域均值、E1/K=1 位级一致、gamma=0 退化、像素/面积/标签、候选同面积及边界、K 前缀和 RNG、不修改原图、同分首选、p=0、空/满/极小框、batch=1、四种浮点 dtype、错误参数及 CUDA。CUDA 不可用时仅跳过 CUDA 测试。
+Install `requirements-dev.txt` and run **`python -m pytest -q`** from the root. `pytest.ini` restricts collection to this directory, so the unchanged upstream reference is not imported as a test suite. No dataset is required.
 
-C 尚需添加 seam/DP 的独立正确性测试，不能用 B 测试通过代替其验收。
+Coverage includes Sobel/integral-image references, candidate areas and RNG rules, E1/K=1 and gamma=0 equivalence, mask/pixel/label consistency, slow seam references, beta=0 and radius=0 reductions, brute-force checks of joint DP, shape/area/fallback constraints, random-boundary reproducibility, checkpoint safety, evidence validation, and multi-step shared-loop CPU/MPS comparisons.
 
-`test_checkpoint.py` 验证存储中断时旧 checkpoint 仍可读取，后续保存可正常完成；所有 GPU 测试的临时文件使用项目内 TMPDIR。
+Hardware-specific CUDA/MPS tests skip when unavailable. `unittest discover` collects only the unittest-style subset and is not the complete acceptance command. [Actual submission checks](../docs/submission_validation.md) record the environment and counts.
+
+The separate `python scripts/smoke_test.py` command exercises every policy with a full ResNet-18 optimizer step, clean evaluation and a temporary checkpoint roundtrip. Add `--data-root` to use an existing CIFAR-100 archive; no automatic download occurs.

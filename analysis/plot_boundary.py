@@ -2,6 +2,7 @@
 import csv
 import json
 from collections import defaultdict
+from pathlib import Path
 
 import matplotlib
 matplotlib.use("Agg")
@@ -10,7 +11,9 @@ import matplotlib.pyplot as plt
 from compile_results import FIGURES, RESULTS, TABLES, format_value, write_csv
 
 
-def main():
+def main(output_dir=None):
+    table_dir = TABLES if output_dir is None else Path(output_dir) / "tables"
+    figure_dir = FIGURES if output_dir is None else Path(output_dir) / "figures"
     base = RESULTS / "member_d"
     summary = json.loads((base / "boundary_summary.json").read_text(encoding="utf-8"))
     samples = defaultdict(list)
@@ -36,7 +39,7 @@ def main():
             edge_snap_rate=stats.get("edge_snap_rate_among_changed"),
         )
         table_rows.append(row)
-    write_csv(TABLES / "d_boundary_quality.csv", table_rows)
+    write_csv(table_dir / "d_boundary_quality.csv", table_rows)
     text = [
         "# Boundary quality", "",
         "Paired, forced-mix audit on CIFAR-100 training images. RGB values are weighted by eligible cross-mask pairs.",
@@ -52,7 +55,7 @@ def main():
                     f'{format_value(row["area_ratio"], 3)} | {format_value(row["boundary_length"])} | '
                     f'{format_value(ratios[0])} | {format_value(row["bends"])} | {format_value(ratios[1])} | '
                     f'{row["na_without_any_padding"]} |')
-    (TABLES / "d_boundary_quality.md").write_text("\n".join(text) + "\n", encoding="utf-8")
+    (table_dir / "d_boundary_quality.md").write_text("\n".join(text) + "\n", encoding="utf-8")
 
     figure, panels = plt.subplots(2, 2, figsize=(11, 6.8), layout="constrained")
     for ax, (title, value) in zip(panels.flat, (
@@ -70,8 +73,8 @@ def main():
         ax.set_title(title, loc="left")
         ax.grid(axis="y", alpha=0.23)
     figure.suptitle(f'CIFAR-100 training split · {table_rows[0]["samples"]:,} paired inputs per method')
-    FIGURES.mkdir(parents=True, exist_ok=True)
-    figure.savefig(FIGURES / "d_boundary_distributions.png", dpi=170)
+    figure_dir.mkdir(parents=True, exist_ok=True)
+    figure.savefig(figure_dir / "d_boundary_distributions.png", dpi=170)
     plt.close(figure)
 
 
