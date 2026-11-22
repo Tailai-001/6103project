@@ -3,6 +3,7 @@ import argparse
 import csv
 import hashlib
 import json
+import math
 from pathlib import Path
 
 import numpy as np
@@ -23,6 +24,11 @@ def verify_checkpoint_log(state, log, require_formal=False):
     epochs = [int(row["epoch"]) for row in rows]
     if not epochs or epochs != list(range(1, len(epochs) + 1)):
         raise ValueError("Expected a continuous, ordered training log starting at epoch 1")
+    accuracies = [float(row["val_accuracy"]) for row in rows]
+    checkpoint_accuracy = float(state["best_val_accuracy"])
+    if any(not math.isfinite(value) or not 0 <= value <= 1
+           for value in [*accuracies, checkpoint_accuracy]):
+        raise ValueError("Expected finite validation accuracy values in [0,1]")
     best = max(rows, key=lambda row: float(row["val_accuracy"]))
     if int(best["epoch"]) != state["epoch"] or abs(float(best["val_accuracy"]) - state["best_val_accuracy"]) > 1e-10:
         raise ValueError("Checkpoint and earliest best validation epoch disagree")

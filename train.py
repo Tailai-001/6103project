@@ -94,7 +94,15 @@ def apply_augmentation(images, labels, aug_cfg):
     return mixed, labels_a, labels_b, lam, metadata
 
 
-def train_one_epoch(model, loader, optimizer, device, aug_cfg, max_batches=None):
+def synchronize_device(device):
+    if device.type == "cuda":
+        torch.cuda.synchronize(device)
+    elif device.type == "mps":
+        torch.mps.synchronize()
+
+
+def train_one_epoch(model, loader, optimizer, device, aug_cfg, max_batches=None,
+                    augmentation_device=None):
     if max_batches is not None and max_batches < 1:
         raise ValueError("--max-batches must be >= 1")
 
@@ -104,17 +112,25 @@ def train_one_epoch(model, loader, optimizer, device, aug_cfg, max_batches=None)
     total_samples = 0
     policy = aug_cfg["policy"]
 
-    if device.type == "cuda":
-        torch.cuda.synchronize()
+    aug_device = device if augmentation_device is None else torch.device(augmentation_device)
+    synchronize_device(device)
     start = time.perf_counter()
 
     for batch_idx, (images, labels) in enumerate(loader):
         if max_batches is not None and batch_idx >= max_batches:
             break
 
-        images = images.to(device, non_blocking=True)
-        labels = labels.to(device, non_blocking=True)
+        images = images.to(aug_device, non_blocking=True)
+        labels = labels.to(aug_device, non_blocking=True)
         mixed, labels_a, labels_b, lam, _ = apply_augmentation(images, labels, aug_cfg)
+        # CUDA retains the original asynchronous route. Use blocking host copies
+        # on MPS: torch 2.5's nonblocking copies can race temporary CPU tensors.
+        non_blocking = device.type == "cuda"
+        mixed = mixed.to(device, non_blocking=non_blocking)
+        labels_a = labels_a.to(device, non_blocking=non_blocking)
+        labels_b = labels_b.to(device, non_blocking=non_blocking)
+        lam = lam.to(device, non_blocking=non_blocking)
+        labels = labels.to(device, non_blocking=non_blocking)
         model_inputs = normalize_images(mixed)
 
         optimizer.zero_grad(set_to_none=True)
@@ -139,8 +155,7 @@ def train_one_epoch(model, loader, optimizer, device, aug_cfg, max_batches=None)
 
     if total_samples == 0:
         raise RuntimeError("No training batches were processed")
-    if device.type == "cuda":
-        torch.cuda.synchronize()
+    synchronize_device(device)
 
     return {
         "loss": total_loss / total_samples,
@@ -155,8 +170,8 @@ def validate(model, loader, device):
     model.eval()
     total_loss = total_correct = total_samples = 0
     for images, labels in loader:
-        images = normalize_images(images.to(device, non_blocking=True))
-        labels = labels.to(device, non_blocking=True)
+        images = normalize_images(images.to(device, non_blocking=device.type == "cuda"))
+        labels = labels.to(device, non_blocking=device.type == "cuda")
         logits = model(images)
         loss = F.cross_entropy(logits, labels, reduction="sum")
         total_loss += loss.item()
@@ -195,6 +210,10 @@ def main():
     parser.add_argument("--max-batches", type=int, default=None,
                         help="Debug only: limit training batches per epoch; validation stays full")
     parser.add_argument("--run-name", default=None)
+    parser.add_argument("--device", choices=("auto", "cpu", "cuda", "mps"), default="auto",
+                        help="auto preserves the original CUDA-or-CPU choice")
+    parser.add_argument("--augmentation-device", choices=("model", "cpu"), default="model",
+                        help="Use CPU augmentation for exact float64 integral scores on Apple MPS")
     args = parser.parse_args()
 
     with open(args.config, "r", encoding="utf-8") as handle:
@@ -215,7 +234,15 @@ def main():
     seed = int(config["experiment"]["seed"])
     policy = config["augmentation"]["policy"]
     set_seed(seed)
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    requested_device = ("cuda" if torch.cuda.is_available() else "cpu") if args.device == "auto" else args.device
+    if requested_device == "cuda" and not torch.cuda.is_available():
+        parser.error("CUDA is unavailable")
+    if requested_device == "mps" and not torch.backends.mps.is_available():
+        parser.error("Apple MPS is unavailable")
+    if requested_device == "mps" and args.augmentation_device != "cpu":
+        parser.error("Use --augmentation-device cpu: the existing algorithms require float64, unsupported on MPS")
+    device = torch.device(requested_device)
+    augmentation_device = torch.device("cpu") if args.augmentation_device == "cpu" else device
 
     default_name = f"{config['experiment']['name']}_{policy}_seed{seed}"
     if args.max_batches is not None:
@@ -275,6 +302,7 @@ def main():
             "torch": torch.__version__,
             "cuda_runtime": torch.version.cuda,
             "device": str(device),
+            "augmentation_device": str(augmentation_device),
             "gpu": torch.cuda.get_device_name(0) if device.type == "cuda" else None,
             "debug_max_batches": args.max_batches,
             "platform": platform.platform(),
@@ -297,6 +325,7 @@ def main():
         train_metrics = train_one_epoch(
             model, train_loader, optimizer, device,
             aug_cfg=config["augmentation"], max_batches=args.max_batches,
+            augmentation_device=augmentation_device,
         )
         val_metrics = validate(model, val_loader, device)
         scheduler.step()

@@ -1,0 +1,35 @@
+# Frozen local same-host confirmation; see results/local_audit/EXPERIMENT_PLAN.md
+experiment:
+  name: local_confirm_e4r_s43
+  seed: 43
+data:
+  root: data/cifar100
+  split_dir: data/splits
+  batch_size: 128
+  num_workers: 0
+model:
+  name: cifar_resnet18
+  num_classes: 100
+training:
+  epochs: 200
+  checkpoint_interval: 10
+  optimizer: sgd
+  learning_rate: 0.1
+  momentum: 0.9
+  weight_decay: 0.0005
+  scheduler: cosine
+augmentation:
+  policy: seam_random
+  alpha: 1.0
+  p: 0.5
+  k: 4
+  gamma: 0.5
+  beta: 1.0
+  seam_radius: 2
+  seam_mu: 0.05
+  seam_min_width: 2
+  seam_area_budget: 0.2
+  seam_random_mu: 0.225
+output:
+  checkpoint_dir: checkpoints/local_audit
+  log_dir: logs/local_audit

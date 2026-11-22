@@ -31,11 +31,15 @@ def evaluate(model, loader, device):
     for x, y in loader:
         x, y = x.to(device, non_blocking=True), y.to(device, non_blocking=True)
         logits = model(normalize_images(x))
+        if not torch.isfinite(logits).all():
+            raise FloatingPointError("Non-finite classifier output during evaluation")
         loss_sum += torch.nn.functional.cross_entropy(logits, y, reduction="sum").item()
         counts += torch.bincount(100 * y + logits.argmax(1), minlength=10000).reshape(100, 100)
     counts = counts.cpu()
     tp = counts.diag().double()
     total = int(counts.sum())
+    if not total:
+        raise ValueError("Cannot evaluate an empty dataset")
     macro_f1 = float((2 * tp / (counts.sum(0) + counts.sum(1)).clamp_min(1)).mean())
     return total, float(tp.sum()) / total, macro_f1, loss_sum / total
 

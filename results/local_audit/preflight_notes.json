@@ -1,0 +1,10 @@
+{
+  "excluded_smoke_runs": [
+    "local_confirm_e1_s43_smoke",
+    "local_confirm_e4_s43_smoke",
+    "local_confirm_e4r_s43_smoke"
+  ],
+  "reason": "Initial local MPS asynchronous host copies failed strict numerical parity; debug-only runs, never used as formal evidence.",
+  "replacement_smoke": "local_confirm_e4_s43_loader0_sync_smoke",
+  "formal_training_started_at_exclusion": false
+}

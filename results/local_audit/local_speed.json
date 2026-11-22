@@ -1,0 +1,33 @@
+{
+  "torch": "2.5.1",
+  "runs": [
+    {
+      "policy": "random",
+      "device": "mps",
+      "batch_size": 128,
+      "augmentation_device": "cpu",
+      "median_batch_seconds": 0.0536096659488976,
+      "estimated_200_epoch_training_minutes": 62.90200804670652,
+      "synthetic_only": true
+    },
+    {
+      "policy": "seam_dp",
+      "device": "mps",
+      "batch_size": 128,
+      "augmentation_device": "cpu",
+      "median_batch_seconds": 0.06808850000379607,
+      "estimated_200_epoch_training_minutes": 79.89050667112072,
+      "synthetic_only": true
+    },
+    {
+      "policy": "seam_random",
+      "device": "mps",
+      "batch_size": 128,
+      "augmentation_device": "cpu",
+      "median_batch_seconds": 0.065918333013542,
+      "estimated_200_epoch_training_minutes": 77.34417740255594,
+      "synthetic_only": true
+    }
+  ],
+  "note": "Synthetic batch estimate excludes dataset loading, validation and checkpoint I/O."
+}
