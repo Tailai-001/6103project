@@ -1,7 +1,7 @@
-# 实验登记（D）
+# Experiment records
 
-`registry.csv` 当前只有表头，没有运行记录。每个 seed 单独一行，用唯一 `run_id`。状态建议 `planned / running / completed / failed / excluded`，排除需在 notes 中写明原因。
+`registry.csv` preserves the original B/C smoke, pilot and formal task records. Their suite runners create unique run IDs, keep failure exit codes, and record settings, source versions and relative output paths. A's two original baseline CSVs remain in its archived handoff.
 
-配置、数据划分与 commit 必须可追溯；日志/checkpoint 可放共享存储并登记 URL。K、γ、β、路径半径、μ 及面积预算只用验证集选择，测试评价在配置冻结后进行。草案字段参见 [配置模板](../configs/experiment_template.json)。
+The three additional seed-43 same-host runs have their own [frozen plan](../results/local_audit/EXPERIMENT_PLAN.md), run metadata, full small logs and [compiled results](../results/local_audit/local_confirmation.md). Together with the 18 original formal runs, the project contains 21 complete 200-epoch runs. The historical registry is not rewritten to suggest that every environment used one scheduler.
 
-编号采用根 README 的 E0–E4、E2-S、E4-R。旧双侧 E3 已改为 E2；若以后导入旧记录，必须保存原始编号并标明映射，不静默改名。
+Every reported accuracy is a validation score. Official-test fields remain empty. Host/backend labels, source hashes and single-run values are retained rather than converted into unsupported multi-seed statistics. [Full evidence](../results/README.md).

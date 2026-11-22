@@ -1,0 +1,49 @@
+# E4-R seam_random: same E3 rectangle and rules as E4, random boundary.
+# Member C. PROVISIONAL starting point, not a frozen protocol: beta, seam_radius,
+# seam_mu, seam_min_width and seam_area_budget still need validation-set
+# selection with D. Everything outside "augmentation" is identical to B's E2
+# config (b_dual_edge_k4_s42.yaml) so E2/E3/E4/E4-R share one training setup.
+# seam_random_mu=0.225 was calibrated on 5,101 CIFAR-100 training images
+# (scripts/calibrate_seam_random_mu.py, shape statistics only) for exactly the
+# E4 parameters in c_seam_dp_k4_s42.yaml. Re-run the script whenever any E4
+# augmentation parameter changes.
+
+experiment:
+  name: "c_seam_random_k4_s42"
+  seed: 42
+
+data:
+  root: "data/cifar100"
+  split_dir: "data/splits"
+  batch_size: 128
+  num_workers: 4
+
+model:
+  name: "cifar_resnet18"
+  num_classes: 100
+
+training:
+  epochs: 200
+  checkpoint_interval: 10
+  optimizer: "sgd"
+  learning_rate: 0.1
+  momentum: 0.9
+  weight_decay: 0.0005
+  scheduler: "cosine"
+
+augmentation:
+  policy: "seam_random"
+  alpha: 1.0
+  p: 0.5
+  k: 4
+  gamma: 0.5
+  beta: 1.0
+  seam_radius: 2
+  seam_mu: 0.05           # E4's value, recorded for reference
+  seam_min_width: 2
+  seam_area_budget: 0.2
+  seam_random_mu: 0.225   # calibrated to E4's mean bends (see header)
+
+output:
+  checkpoint_dir: "checkpoints"
+  log_dir: "logs"

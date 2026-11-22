@@ -1,0 +1,96 @@
+{
+  "device": "cuda",
+  "gpu": "NVIDIA GeForce RTX 4090",
+  "torch": "2.5.1+cu124",
+  "dtype": "torch.float32",
+  "batch_size": 128,
+  "warmup": 10,
+  "repetitions": 50,
+  "timing": "synchronized, complete augmentation only (timing p = config p), excludes data loading and model",
+  "results": [
+    {
+      "config": "b_dual_edge_k4_s42",
+      "policy": "dual_edge",
+      "p": 0.5,
+      "augmentation_ms_per_batch": 11.095443647354841,
+      "median_ms": 10.964971967041492
+    },
+    {
+      "config": "c_seam_aware_k4_s42",
+      "policy": "seam_aware",
+      "p": 0.5,
+      "augmentation_ms_per_batch": 11.09552625566721,
+      "median_ms": 10.804218240082264
+    },
+    {
+      "config": "c_seam_dp_k4_s42",
+      "policy": "seam_dp",
+      "p": 0.5,
+      "augmentation_ms_per_batch": 24.77792028337717,
+      "median_ms": 24.606666527688503
+    },
+    {
+      "config": "c_seam_random_k4_s42",
+      "policy": "seam_random",
+      "p": 0.5,
+      "augmentation_ms_per_batch": 24.940663892775774,
+      "median_ms": 24.018144235014915
+    },
+    {
+      "config": "c_ctrl_dual_edge_k4_s42",
+      "policy": "dual_edge",
+      "p": 0.5,
+      "augmentation_ms_per_batch": 10.548653658479452,
+      "median_ms": 10.205795057117939
+    },
+    {
+      "config": "c_ctrl_random_s42",
+      "policy": "random",
+      "p": 0.5,
+      "augmentation_ms_per_batch": 8.747250325977802,
+      "median_ms": 8.596389554440975
+    },
+    {
+      "config": "c_abl_seam_aware_k4_b05_s42",
+      "policy": "seam_aware",
+      "p": 0.5,
+      "augmentation_ms_per_batch": 11.00397290661931,
+      "median_ms": 11.014736257493496
+    },
+    {
+      "config": "c_abl_seam_aware_k4_b2_s42",
+      "policy": "seam_aware",
+      "p": 0.5,
+      "augmentation_ms_per_batch": 11.060446705669165,
+      "median_ms": 11.0295619815588
+    },
+    {
+      "config": "c_abl_seam_dp_k4_r1_s42",
+      "policy": "seam_dp",
+      "p": 0.5,
+      "augmentation_ms_per_batch": 26.76176641136408,
+      "median_ms": 24.625609628856182
+    },
+    {
+      "config": "c_abl_seam_dp_k4_r3_s42",
+      "policy": "seam_dp",
+      "p": 0.5,
+      "augmentation_ms_per_batch": 25.49036581069231,
+      "median_ms": 24.675430729985237
+    },
+    {
+      "config": "c_abl_seam_dp_k4_mu0_s42",
+      "policy": "seam_dp",
+      "p": 0.5,
+      "augmentation_ms_per_batch": 24.378283713012934,
+      "median_ms": 24.188505485653877
+    },
+    {
+      "config": "c_abl_seam_dp_k4_mu02_s42",
+      "policy": "seam_dp",
+      "p": 0.5,
+      "augmentation_ms_per_batch": 24.128854926675558,
+      "median_ms": 24.11848772317171
+    }
+  ]
+}

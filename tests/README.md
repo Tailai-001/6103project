@@ -1,7 +1,9 @@
-# 正确性检查（A/B/C）
+# Correctness and integration tests
 
-算法实现后补充必要测试：像素替换与最终 Mask 面积、边界/零面积、奇数尺寸、常量图像、固定随机输入复现、batch size 1、设备和 dtype。当前只有待实现清单，没有可运行测试或验证过的算法。
+Install `requirements-dev.txt` and run **`python -m pytest -q`** from the root. `pytest.ini` restricts collection to this directory, so the unchanged upstream reference is not imported as a test suite. No dataset is required.
 
-退化对照共用配对、候选、归一化与同分规则：dual_edge γ=0 → source_edge；seam_aware β=0 → dual_edge；seam_dp r=0 → seam_aware 矩形。K=1 只取消候选筛选，不能取消 DP 边界变化。
+Coverage includes Sobel/integral-image references, candidate areas and RNG rules, E1/K=1 and gamma=0 equivalence, mask/pixel/label consistency, slow seam references, beta=0 and radius=0 reductions, brute-force checks of joint DP, shape/area/fallback constraints, random-boundary reproducibility, checkpoint safety, evidence validation, and multi-step shared-loop CPU/MPS comparisons.
 
-C 的 Mask/路径测试需检查二值性、最小宽度、不交叉、相邻行连续性、面积预算、无可行路径回退、完整接缝计数与空/满 Mask 指标。小图像可用可枚举路径核对求解目标；不应把局部代理最优当作完整边界最优。E4-R 复用相同约束并可复现。D 核对计时和面积/边界诊断。
+Hardware-specific CUDA/MPS tests skip when unavailable. `unittest discover` collects only the unittest-style subset and is not the complete acceptance command. [Actual submission checks](../docs/submission_validation.md) record the environment and counts.
+
+The separate `python scripts/smoke_test.py` command exercises every policy with a full ResNet-18 optimizer step, clean evaluation and a temporary checkpoint roundtrip. Add `--data-root` to use an existing CIFAR-100 archive; no automatic download occurs.

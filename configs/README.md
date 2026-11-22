@@ -1,7 +1,16 @@
-# 配置（A/D）
+# Experiment configurations
 
-`experiment_template.json` 是字段草案，`null` 表示尚未决定；它不由任何训练入口读取，也不是可执行训练配置。A 实现入口时应冻结 schema，为 E0–E4、E2-S 和 E4-R 生成完整配置，编号见根 README。
+All YAML files run through the same root `train.py`. Use the [README](../README.md) for commands and the [protocol](../docs/experiment_protocol.md) for the recorded settings.
 
-E1–E3 保持相同实际矩形面积，比较随机、双侧边缘和接缝选区。E4/E4-R 还要固定边界半径、连续性、最小宽度、面积偏移预算及回退规则，报告最终形状/面积分布。模型、划分、训练预算、优化器、p 与 α 共用，超参数只用验证集选择。
+| Files | Purpose |
+|---|---|
+| `main.yaml` | A's 200-epoch E0 default; use `--policy random` for E1 |
+| `b_*_s42.yaml` | Five B content-selection runs, K=1/4/8, seed 42 |
+| `c_seam_*_k4_s42.yaml` | Main E3, E4 and E4-R runs |
+| `c_ctrl_*`, `c_abl_*` | C's same-GPU-model controls and beta/radius/bending ablations |
+| `local_confirm_*_s43.yaml` | Three same-host confirmation runs, seed 43, CPU augmentation + MPS model |
+| `smoke_cpu.yaml` | One-epoch integration check, batch 4, workers 0; not formal evidence |
 
-`alpha` 为 CutMix 分布参数，`beta` 为接缝惩罚系数；上游脚本 `--beta` 的含义与本模板不同。原论文学习率不可直接视为 ResNet-18 默认值。
+The historical B/C and confirmation YAMLs are retained as recorded, including the settings used in saved logs. They are reproducibility configurations, not a claim of globally optimal hyperparameters. E4/E4-R explicitly set radius 2, minimum width 2 and area budget 0.2; E4-R uses its training-shape-calibrated bend penalty 0.225. Recalibrate that control if changing its corresponding geometry.
+
+Copy a configuration to adjust data paths or loader workers. Preserve the supplied split and use a unique run name. `experiment_template.json` is an archived design schema, not an executable trainer input.

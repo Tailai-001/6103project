@@ -1,0 +1,42 @@
+# E3 seam_aware: E2 dual_edge (K=4, gamma=0.5) minus beta * normalised seam cost.
+# Member C. PROVISIONAL starting point, not a frozen protocol: beta, seam_radius,
+# seam_mu, seam_min_width and seam_area_budget still need validation-set
+# selection with D. Everything outside "augmentation" is identical to B's E2
+# config (b_dual_edge_k4_s42.yaml) so E2/E3/E4/E4-R share one training setup.
+
+experiment:
+  name: "c_seam_aware_k4_s42"
+  seed: 42
+
+data:
+  root: "data/cifar100"
+  split_dir: "data/splits"
+  batch_size: 128
+  num_workers: 4
+
+model:
+  name: "cifar_resnet18"
+  num_classes: 100
+
+training:
+  epochs: 200
+  checkpoint_interval: 10
+  optimizer: "sgd"
+  learning_rate: 0.1
+  momentum: 0.9
+  weight_decay: 0.0005
+  scheduler: "cosine"
+
+augmentation:
+  policy: "seam_aware"
+  alpha: 1.0
+  p: 0.5
+  k: 4
+  gamma: 0.5
+  beta: 1.0
+  seam_radius: 0
+  seam_mu: 0.0
+
+output:
+  checkpoint_dir: "checkpoints"
+  log_dir: "logs"

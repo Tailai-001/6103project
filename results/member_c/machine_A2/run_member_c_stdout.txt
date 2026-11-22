@@ -1,0 +1,142 @@
+== environment
+2.5.1+cu124 NVIDIA GeForce RTX 4090
+== tests
+104 passed in 8.31s
+== data (downloads the CIFAR-100 train set into data/cifar100 if missing; git-ignored)
+Files already downloaded and verified
+== augmentation timing (GPU, synchronized)
+{"config": "b_dual_edge_k4_s42", "policy": "dual_edge", "p": 0.5, "augmentation_ms_per_batch": 11.095443647354841, "median_ms": 10.964971967041492}
+{"config": "c_seam_aware_k4_s42", "policy": "seam_aware", "p": 0.5, "augmentation_ms_per_batch": 11.09552625566721, "median_ms": 10.804218240082264}
+{"config": "c_seam_dp_k4_s42", "policy": "seam_dp", "p": 0.5, "augmentation_ms_per_batch": 24.77792028337717, "median_ms": 24.606666527688503}
+{"config": "c_seam_random_k4_s42", "policy": "seam_random", "p": 0.5, "augmentation_ms_per_batch": 24.940663892775774, "median_ms": 24.018144235014915}
+{"config": "c_ctrl_dual_edge_k4_s42", "policy": "dual_edge", "p": 0.5, "augmentation_ms_per_batch": 10.548653658479452, "median_ms": 10.205795057117939}
+{"config": "c_ctrl_random_s42", "policy": "random", "p": 0.5, "augmentation_ms_per_batch": 8.747250325977802, "median_ms": 8.596389554440975}
+{"config": "c_abl_seam_aware_k4_b05_s42", "policy": "seam_aware", "p": 0.5, "augmentation_ms_per_batch": 11.00397290661931, "median_ms": 11.014736257493496}
+{"config": "c_abl_seam_aware_k4_b2_s42", "policy": "seam_aware", "p": 0.5, "augmentation_ms_per_batch": 11.060446705669165, "median_ms": 11.0295619815588}
+{"config": "c_abl_seam_dp_k4_r1_s42", "policy": "seam_dp", "p": 0.5, "augmentation_ms_per_batch": 26.76176641136408, "median_ms": 24.625609628856182}
+{"config": "c_abl_seam_dp_k4_r3_s42", "policy": "seam_dp", "p": 0.5, "augmentation_ms_per_batch": 25.49036581069231, "median_ms": 24.675430729985237}
+{"config": "c_abl_seam_dp_k4_mu0_s42", "policy": "seam_dp", "p": 0.5, "augmentation_ms_per_batch": 24.378283713012934, "median_ms": 24.188505485653877}
+{"config": "c_abl_seam_dp_k4_mu02_s42", "policy": "seam_dp", "p": 0.5, "augmentation_ms_per_batch": 24.128854926675558, "median_ms": 24.11848772317171}
+== formal: ctrl_e2 ctrl_e1 e3_b05 e3_b2 (sequential, 200 epochs each)
+[14:21:16] start c_ctrl_e2_k4_s42: train.py --config configs/c_ctrl_dual_edge_k4_s42.yaml --run-name c_ctrl_e2_k4_s42
+{"run_id": "c_ctrl_e2_k4_s42", "experiment": "E2 control", "policy": "dual_edge", "seed": 42, "git_commit": "77abc2592059eb25c625bcccc93ce7d743fe6d84", "config_path": "configs/c_ctrl_dual_edge_k4_s42.yaml", "split_sha256": "train_indices.npy:24520246ef0988e61bb0fe0f5c66da3a1f944be0569ccb5f0afc2536b92dfc15;val_indices.npy:2c80060ed0fa8eba98b2023be25aa56794982c9d6bf762dd1eb29205835d67c2", "environment": "checkpoints/c_ctrl_e2_k4_s42/environment.json", "device": "NVIDIA GeForce RTX 4090", "started_at": "2026-11-20T06:21:16.795162+00:00", "status": "completed", "val_top1_percent": 79.84, "test_top1_percent": "", "test_macro_f1": "", "augmentation_ms_per_batch": 10.548653658479452, "total_training_seconds": 2085.7744896663353, "log_uri": "logs/c_ctrl_e2_k4_s42.csv", "checkpoint_uri": "checkpoints/c_ctrl_e2_k4_s42/best.pth", "boundary_discontinuity": "", "mask_area_ratio_mean": "", "mask_boundary_length_mean": "", "fallback_rate": "", "notes": "phase=formal; overrides=[]; workers=1; validation only; seam parameters PROVISIONAL (not yet selected on validation); augmentation timing isolated before training on NVIDIA GeForce RTX 4090; exit_code=0"}
+[14:56:02] start c_ctrl_e1_s42: train.py --config configs/c_ctrl_random_s42.yaml --run-name c_ctrl_e1_s42
+{"run_id": "c_ctrl_e1_s42", "experiment": "E1 control", "policy": "random", "seed": 42, "git_commit": "77abc2592059eb25c625bcccc93ce7d743fe6d84", "config_path": "configs/c_ctrl_random_s42.yaml", "split_sha256": "train_indices.npy:24520246ef0988e61bb0fe0f5c66da3a1f944be0569ccb5f0afc2536b92dfc15;val_indices.npy:2c80060ed0fa8eba98b2023be25aa56794982c9d6bf762dd1eb29205835d67c2", "environment": "checkpoints/c_ctrl_e1_s42/environment.json", "device": "NVIDIA GeForce RTX 4090", "started_at": "2026-11-20T06:56:02.577153+00:00", "status": "completed", "val_top1_percent": 80.02, "test_top1_percent": "", "test_macro_f1": "", "augmentation_ms_per_batch": 8.747250325977802, "total_training_seconds": 2025.8421471621841, "log_uri": "logs/c_ctrl_e1_s42.csv", "checkpoint_uri": "checkpoints/c_ctrl_e1_s42/best.pth", "boundary_discontinuity": "", "mask_area_ratio_mean": "", "mask_boundary_length_mean": "", "fallback_rate": "", "notes": "phase=formal; overrides=[]; workers=1; validation only; seam parameters PROVISIONAL (not yet selected on validation); augmentation timing isolated before training on NVIDIA GeForce RTX 4090; exit_code=0"}
+[15:29:48] start c_e3_b05_k4_s42: train.py --config configs/c_abl_seam_aware_k4_b05_s42.yaml --run-name c_e3_b05_k4_s42
+{"run_id": "c_e3_b05_k4_s42", "experiment": "E3 ablation", "policy": "seam_aware", "seed": 42, "git_commit": "77abc2592059eb25c625bcccc93ce7d743fe6d84", "config_path": "configs/c_abl_seam_aware_k4_b05_s42.yaml", "split_sha256": "train_indices.npy:24520246ef0988e61bb0fe0f5c66da3a1f944be0569ccb5f0afc2536b92dfc15;val_indices.npy:2c80060ed0fa8eba98b2023be25aa56794982c9d6bf762dd1eb29205835d67c2", "environment": "checkpoints/c_e3_b05_k4_s42/environment.json", "device": "NVIDIA GeForce RTX 4090", "started_at": "2026-11-20T07:29:48.426538+00:00", "status": "completed", "val_top1_percent": 79.96, "test_top1_percent": "", "test_macro_f1": "", "augmentation_ms_per_batch": 11.00397290661931, "total_training_seconds": 2162.368311261758, "log_uri": "logs/c_e3_b05_k4_s42.csv", "checkpoint_uri": "checkpoints/c_e3_b05_k4_s42/best.pth", "boundary_discontinuity": "", "mask_area_ratio_mean": "", "mask_boundary_length_mean": "", "fallback_rate": "", "notes": "phase=formal; overrides=[]; workers=1; validation only; seam parameters PROVISIONAL (not yet selected on validation); augmentation timing isolated before training on NVIDIA GeForce RTX 4090; exit_code=0"}
+[16:05:50] start c_e3_b2_k4_s42: train.py --config configs/c_abl_seam_aware_k4_b2_s42.yaml --run-name c_e3_b2_k4_s42
+{"run_id": "c_e3_b2_k4_s42", "experiment": "E3 ablation", "policy": "seam_aware", "seed": 42, "git_commit": "77abc2592059eb25c625bcccc93ce7d743fe6d84", "config_path": "configs/c_abl_seam_aware_k4_b2_s42.yaml", "split_sha256": "train_indices.npy:24520246ef0988e61bb0fe0f5c66da3a1f944be0569ccb5f0afc2536b92dfc15;val_indices.npy:2c80060ed0fa8eba98b2023be25aa56794982c9d6bf762dd1eb29205835d67c2", "environment": "checkpoints/c_e3_b2_k4_s42/environment.json", "device": "NVIDIA GeForce RTX 4090", "started_at": "2026-11-20T08:05:50.802023+00:00", "status": "completed", "val_top1_percent": 80.16, "test_top1_percent": "", "test_macro_f1": "", "augmentation_ms_per_batch": 11.060446705669165, "total_training_seconds": 2161.4225318785757, "log_uri": "logs/c_e3_b2_k4_s42.csv", "checkpoint_uri": "checkpoints/c_e3_b2_k4_s42/best.pth", "boundary_discontinuity": "", "mask_area_ratio_mean": "", "mask_boundary_length_mean": "", "fallback_rate": "", "notes": "phase=formal; overrides=[]; workers=1; validation only; seam parameters PROVISIONAL (not yet selected on validation); augmentation timing isolated before training on NVIDIA GeForce RTX 4090; exit_code=0"}
+== checkpoint re-evaluation + Macro-F1 (validation only, every C run with a best.pth here)
+{"run_id": "c_ctrl_e2_k4_s42", "experiment": "E2 control", "config": "configs/c_ctrl_dual_edge_k4_s42.yaml", "split": "fixed_validation_only", "samples": 5000, "device": "cuda", "num_workers": 4, "evaluation_script_sha256": "62d92b7bb73907e901c621a0540138d1905aae6eec3c126284cad6406a51d0a3", "checkpoint_epoch": 195, "val_top1_percent": 79.84, "val_macro_f1": 0.7976534597840896, "val_loss": 0.7744108867317439, "logged_accuracy_verified": true, "logged_val_top1_percent": 79.84}
+{"run_id": "c_ctrl_e1_s42", "experiment": "E1 control", "config": "configs/c_ctrl_random_s42.yaml", "split": "fixed_validation_only", "samples": 5000, "device": "cuda", "num_workers": 4, "evaluation_script_sha256": "62d92b7bb73907e901c621a0540138d1905aae6eec3c126284cad6406a51d0a3", "checkpoint_epoch": 199, "val_top1_percent": 80.02, "val_macro_f1": 0.7991132628575619, "val_loss": 0.7731503957748413, "logged_accuracy_verified": true, "logged_val_top1_percent": 80.02}
+{"run_id": "c_e3_b05_k4_s42", "experiment": "E3 ablation", "config": "configs/c_abl_seam_aware_k4_b05_s42.yaml", "split": "fixed_validation_only", "samples": 5000, "device": "cuda", "num_workers": 4, "evaluation_script_sha256": "62d92b7bb73907e901c621a0540138d1905aae6eec3c126284cad6406a51d0a3", "checkpoint_epoch": 198, "val_top1_percent": 79.96, "val_macro_f1": 0.7980408497782797, "val_loss": 0.7800468806266785, "logged_accuracy_verified": true, "logged_val_top1_percent": 79.96}
+{"run_id": "c_e3_b2_k4_s42", "experiment": "E3 ablation", "config": "configs/c_abl_seam_aware_k4_b2_s42.yaml", "split": "fixed_validation_only", "samples": 5000, "device": "cuda", "num_workers": 4, "evaluation_script_sha256": "62d92b7bb73907e901c621a0540138d1905aae6eec3c126284cad6406a51d0a3", "checkpoint_epoch": 190, "val_top1_percent": 80.16, "val_macro_f1": 0.8004842110424424, "val_loss": 0.766765898180008, "logged_accuracy_verified": true, "logged_val_top1_percent": 80.16}
+== summary
+[
+  {
+    "run_id": "c_ctrl_e2_k4_s42",
+    "experiment": "E2 control",
+    "policy": "dual_edge",
+    "seed": 42,
+    "epochs_logged": 200,
+    "best_val_top1_percent": 79.84,
+    "best_epoch": 195,
+    "val_loss_at_best": 0.7744108867317439,
+    "final_val_top1_percent": 79.7,
+    "last10_mean_val_top1_percent": 79.726,
+    "mean_epoch_seconds": 10.350717348502949,
+    "sum_epoch_seconds": 2070.14346970059,
+    "val_macro_f1": 0.7976534597840896,
+    "config": "configs/c_ctrl_dual_edge_k4_s42.yaml",
+    "augmentation": {
+      "policy": "dual_edge",
+      "k": 4,
+      "gamma": 0.5,
+      "beta": 0.0,
+      "seam_radius": 0,
+      "seam_mu": 0.0
+    },
+    "log_path": "logs/c_ctrl_e2_k4_s42.csv",
+    "checkpoint_path": "checkpoints/c_ctrl_e2_k4_s42/best.pth"
+  },
+  {
+    "run_id": "c_ctrl_e1_s42",
+    "experiment": "E1 control",
+    "policy": "random",
+    "seed": 42,
+    "epochs_logged": 200,
+    "best_val_top1_percent": 80.02,
+    "best_epoch": 199,
+    "val_loss_at_best": 0.7731503957748413,
+    "final_val_top1_percent": 79.66,
+    "last10_mean_val_top1_percent": 79.818,
+    "mean_epoch_seconds": 10.05070707642939,
+    "sum_epoch_seconds": 2010.1414152858779,
+    "val_macro_f1": 0.7991132628575619,
+    "config": "configs/c_ctrl_random_s42.yaml",
+    "augmentation": {
+      "policy": "random",
+      "k": 4,
+      "gamma": 0.5,
+      "beta": 0.0,
+      "seam_radius": 0,
+      "seam_mu": 0.0
+    },
+    "log_path": "logs/c_ctrl_e1_s42.csv",
+    "checkpoint_path": "checkpoints/c_ctrl_e1_s42/best.pth"
+  },
+  {
+    "run_id": "c_e3_b05_k4_s42",
+    "experiment": "E3 ablation",
+    "policy": "seam_aware",
+    "seed": 42,
+    "epochs_logged": 200,
+    "best_val_top1_percent": 79.96,
+    "best_epoch": 198,
+    "val_loss_at_best": 0.7800468806266785,
+    "final_val_top1_percent": 79.92,
+    "last10_mean_val_top1_percent": 79.796,
+    "mean_epoch_seconds": 10.733262953669763,
+    "sum_epoch_seconds": 2146.652590733953,
+    "val_macro_f1": 0.7980408497782797,
+    "config": "configs/c_abl_seam_aware_k4_b05_s42.yaml",
+    "augmentation": {
+      "policy": "seam_aware",
+      "k": 4,
+      "gamma": 0.5,
+      "beta": 0.5,
+      "seam_radius": 0,
+      "seam_mu": 0.0
+    },
+    "log_path": "logs/c_e3_b05_k4_s42.csv",
+    "checkpoint_path": "checkpoints/c_e3_b05_k4_s42/best.pth"
+  },
+  {
+    "run_id": "c_e3_b2_k4_s42",
+    "experiment": "E3 ablation",
+    "policy": "seam_aware",
+    "seed": 42,
+    "epochs_logged": 200,
+    "best_val_top1_percent": 80.16,
+    "best_epoch": 190,
+    "val_loss_at_best": 0.766765898180008,
+    "final_val_top1_percent": 79.78,
+    "last10_mean_val_top1_percent": 79.806,
+    "mean_epoch_seconds": 10.724000198291614,
+    "sum_epoch_seconds": 2144.800039658323,
+    "val_macro_f1": 0.8004842110424424,
+    "config": "configs/c_abl_seam_aware_k4_b2_s42.yaml",
+    "augmentation": {
+      "policy": "seam_aware",
+      "k": 4,
+      "gamma": 0.5,
+      "beta": 2.0,
+      "seam_radius": 0,
+      "seam_mu": 0.0
+    },
+    "log_path": "logs/c_e3_b2_k4_s42.csv",
+    "checkpoint_path": "checkpoints/c_e3_b2_k4_s42/best.pth"
+  }
+]
+NOTE: seed 42, validation split only; not test-set results, not a multi-seed mean.
+== exit status 0

@@ -1,7 +1,9 @@
-# 可核实的结果
+# Public experiment evidence
 
-`tables/main_results.csv` 是空表头模板。`tables/` 放汇总数据，`figures/` 放由真实日志生成的小型图示。当前未运行任何 E0–E4、E2-S 或 E4-R 实验。
+The original [18-run table](tables/main_results.md) and [CSV](tables/main_results.csv) cover A's 2 baselines, B's 5 content-selection experiments and C's 11 main/control/ablation runs. A's raw CSVs remain in the archived A handoff; B/C raw logs and run metadata are under `member_b/` and `member_c/`.
 
-除分类与效率外，记录真实接缝代价、Mask 面积与边界长度、回退率及形状匹配说明。无内部接缝的边界指标为不适用；其计数与分布诊断应在原始日志或附表保留，不能填零美化均值。
+The three additional [same-host confirmation runs](local_audit/local_confirmation.md) are under `local_audit/raw_logs/`, with saved configurations, environment records and validation predictions. The complete project therefore contains **21 formal 200-epoch runs**. They are grouped by host and seed, not pooled into a controlled multi-seed claim.
 
-不要把原论文数值、本组拟定目标或示例数字填成实测结果。大文件使用共享存储，并在 `experiments/registry.csv` 登记链接。
+`member_d/` contains the paired training-image boundary audit. [Boundary tables](tables/d_boundary_quality.md), efficiency tables and `figures/` trace back to these inputs. All currently reported classification metrics are validation metrics; official-test fields remain empty. Datasets and checkpoints are excluded.
+
+Rebuild tables and four plots with `python analysis/reproduce_results.py --out-dir outputs/reproduced` from the root. The command recomputes confirmation accuracy/F1 from public predictions, verifies raw logs and writes an input-hash manifest. [Result interpretation](../RESULTS_D.md) · [Independent audit](../RESULTS_AUDIT.md).

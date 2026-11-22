@@ -1,0 +1,10 @@
+method,config,machine,augmentation_ms_per_batch,source
+E2,b_dual_edge_k4_s42,C-main / RTX 4090,8.471766263246536,results/member_c/aug_timing.json
+E3,c_seam_aware_k4_s42,C-main / RTX 4090,9.169086813926697,results/member_c/aug_timing.json
+E4,c_seam_dp_k4_s42,C-main / RTX 4090,19.789031594991684,results/member_c/aug_timing.json
+E4-R,c_seam_random_k4_s42,C-main / RTX 4090,19.339934587478638,results/member_c/aug_timing.json
+E1,c_ctrl_random_s42,C-A2 / separate RTX 4090,8.747250325977802,results/member_c/machine_A2/aug_timing.json
+E2,c_ctrl_dual_edge_k4_s42,C-A2 / separate RTX 4090,10.548653658479452,results/member_c/machine_A2/aug_timing.json
+E3,c_seam_aware_k4_s42,C-A2 / separate RTX 4090,11.09552625566721,results/member_c/machine_A2/aug_timing.json
+E4,c_seam_dp_k4_s42,C-A2 / separate RTX 4090,24.77792028337717,results/member_c/machine_A2/aug_timing.json
+E4-R,c_seam_random_k4_s42,C-A2 / separate RTX 4090,24.940663892775774,results/member_c/machine_A2/aug_timing.json

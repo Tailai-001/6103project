@@ -1,0 +1,22 @@
+[
+  {
+    "run_id": "b_dual_edge_k1_s42_seq",
+    "workers4_vs_workers0_identical": true
+  },
+  {
+    "run_id": "b_dual_edge_k4_s42_seq",
+    "workers4_vs_workers0_identical": true
+  },
+  {
+    "run_id": "b_source_edge_k4_s42_seq",
+    "workers4_vs_workers0_identical": true
+  },
+  {
+    "run_id": "b_dual_edge_k8_s42_seq",
+    "workers4_vs_workers0_identical": true
+  },
+  {
+    "run_id": "b_source_edge_k8_s42_seq",
+    "workers4_vs_workers0_identical": true
+  }
+]

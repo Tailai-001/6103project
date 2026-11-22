@@ -1,9 +1,13 @@
-# 结果分析（D）
+# Result reproduction and evidence analysis
 
-待实现独立评价汇总、学习曲线、效率图和消融分析，使用统一实验登记表。项目级 `evaluate.py` 由 D 与 A 协调接口后补充。当前实验编号为 E0–E4，单侧为 E2-S，随机边界对照为 E4-R。
+The portable entry point is **`python analysis/reproduce_results.py --out-dir outputs/reproduced`**, run from the root. It reads committed evidence, regenerates the original 18-run table, three local confirmation summaries, boundary/efficiency tables and four plots, and records input hashes. It neither trains nor requires datasets or checkpoints, and writes outside the evidence tree.
 
-新增最终混合图像的 RGB 边界不连续度、有效边界计数、Mask 面积比例、边界长度、非法路径与回退率。边界度量使用所有有效跨 Mask 四邻接像素对，不计图像外填充；无内部接缝时不填成零分。固定图像对与候选做配对诊断，另说明统计覆盖混合样本还是全部 batch。
+- `compile_results.py`: original A/B/C formal logs, settings, recorded checkpoint metrics, ablations, curves and synchronized costs. Its functions accept separate output directories.
+- `plot_boundary.py`: D's raw paired audit CSV and summary, including validity-mask padding exclusions, final areas, boundary lengths and fallbacks.
+- `audit_training_evidence.py`: checks the 18 original runs and their historical Git source hashes; requires full Git history.
+- `paired_boundary_evidence.py`: paired batch bootstrap and padding/edge/shape sensitivity from the public CSV. These intervals do not measure classifier or seed uncertainty.
+- `plot_paired_boundary_evidence.py`: plots those paired diagnostic intervals.
+- `boundary_audit.py`: regenerates actual mixed-image diagnostics from an available dataset through the unified augmentation API.
+- `compile_local_confirmation.py`: original checkpoint-based compilation of the completed same-host experiment. It requires its local checkpoints; the portable reproducer instead verifies the public logs and saved validation predictions.
 
-E4 与 E4-R 从同一 E3 矩形出发，核对相同路径/面积约束并报告实际分布；更小颜色跳变不直接意味着更高 accuracy。增强计时需覆盖整个方法，GPU 预热与同步，另报完整训练耗时。
-
-报告每 seed 原值与均值/标准差的定义；失败、无效和负面结果同样保留。输出的小型表格与图放 `results/`，当前没有实验结果。
+[Integrated D analysis](../RESULTS_D.md) · [Independent audit](../RESULTS_AUDIT.md) · [Running guide](../docs/running.md).

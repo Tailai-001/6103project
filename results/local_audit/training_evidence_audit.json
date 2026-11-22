@@ -1,0 +1,486 @@
+{
+  "base_commit": "8408c039b0ad33b97ffc8f9214135f024ef71efb",
+  "runs": [
+    {
+      "run_id": "e0_final_s42",
+      "member": "A",
+      "epochs": 200,
+      "seed": 42,
+      "machine": "A-original",
+      "best_val_top1_percent": 77.74,
+      "last10_mean_percent": 77.534,
+      "log_sha256": "e9b2bb580531fe6872aa20472edb564a67b8cc54c44f022684b76edf7dbc6a73",
+      "checks": [
+        "continuous_200_epochs",
+        "45000_train_samples_per_epoch",
+        "finite_metrics",
+        "published_best_and_last10_consistency",
+        "shared_split_hashes"
+      ],
+      "limitations": [
+        "No saved per-run source hashes or per-run checkpoint validation in A handoff."
+      ]
+    },
+    {
+      "run_id": "e1_final_s42",
+      "member": "A",
+      "epochs": 200,
+      "seed": 42,
+      "machine": "A-original",
+      "best_val_top1_percent": 80.52,
+      "last10_mean_percent": 80.124,
+      "log_sha256": "33878d6517a666bf6622e4e120044a1d66252a6a59af0bff65a38c3cdd0cbae9",
+      "checks": [
+        "continuous_200_epochs",
+        "45000_train_samples_per_epoch",
+        "finite_metrics",
+        "published_best_and_last10_consistency",
+        "shared_split_hashes"
+      ],
+      "limitations": [
+        "No saved per-run source hashes or per-run checkpoint validation in A handoff."
+      ]
+    },
+    {
+      "run_id": "b_dual_edge_k1_s42_seq",
+      "member": "B",
+      "epochs": 200,
+      "seed": 42,
+      "machine": "B-original",
+      "best_val_top1_percent": 80.06,
+      "last10_mean_percent": 79.796,
+      "log_sha256": "d968033a4043eafef72bfc17b5e34432a60ebbfeb889c292f6e4cd60e0eab763",
+      "checks": [
+        "continuous_200_epochs",
+        "45000_train_samples_per_epoch",
+        "finite_metrics",
+        "published_best_and_last10_consistency",
+        "shared_split_hashes",
+        "saved_config_equals_published_config",
+        "not_debug",
+        "historical_source_hashes_verified"
+      ],
+      "training_ref": "9562fdffa1e42ea87c29890faeaf28fda07747dc",
+      "source_files_verified": 13,
+      "config_sha256": "4b0d1db63fb03cb1720d805b67290643f95ec27f0b8788c934d80261a2319dd9"
+    },
+    {
+      "run_id": "b_dual_edge_k4_s42_seq",
+      "member": "B",
+      "epochs": 200,
+      "seed": 42,
+      "machine": "B-original",
+      "best_val_top1_percent": 79.64,
+      "last10_mean_percent": 79.524,
+      "log_sha256": "a98df424025d6afeb78a85a4a7682c1b8f3c550496f7cde247e9b7fefda93c2b",
+      "checks": [
+        "continuous_200_epochs",
+        "45000_train_samples_per_epoch",
+        "finite_metrics",
+        "published_best_and_last10_consistency",
+        "shared_split_hashes",
+        "saved_config_equals_published_config",
+        "not_debug",
+        "historical_source_hashes_verified"
+      ],
+      "training_ref": "9562fdffa1e42ea87c29890faeaf28fda07747dc",
+      "source_files_verified": 13,
+      "config_sha256": "b599b7d655158bb1b4c3e659d7f0abeaa606bfe4a46f8e4503112ab374431d48"
+    },
+    {
+      "run_id": "b_source_edge_k4_s42_seq",
+      "member": "B",
+      "epochs": 200,
+      "seed": 42,
+      "machine": "B-original",
+      "best_val_top1_percent": 80.36,
+      "last10_mean_percent": 80.2,
+      "log_sha256": "63d70679a641eb69fedee0262accbe6a917e0683ccd90517081170ccb98044f9",
+      "checks": [
+        "continuous_200_epochs",
+        "45000_train_samples_per_epoch",
+        "finite_metrics",
+        "published_best_and_last10_consistency",
+        "shared_split_hashes",
+        "saved_config_equals_published_config",
+        "not_debug",
+        "historical_source_hashes_verified"
+      ],
+      "training_ref": "9562fdffa1e42ea87c29890faeaf28fda07747dc",
+      "source_files_verified": 13,
+      "config_sha256": "49fb03afa3c09816411e5a735e6e2eba78faa31a7ebf61b55e32787f3ac48c48"
+    },
+    {
+      "run_id": "b_dual_edge_k8_s42_seq",
+      "member": "B",
+      "epochs": 200,
+      "seed": 42,
+      "machine": "B-original",
+      "best_val_top1_percent": 79.62,
+      "last10_mean_percent": 79.284,
+      "log_sha256": "01c1ef5bc46d80bb9a14f29bf9a964cbb10ba72d9f2cefc579820879c0077f51",
+      "checks": [
+        "continuous_200_epochs",
+        "45000_train_samples_per_epoch",
+        "finite_metrics",
+        "published_best_and_last10_consistency",
+        "shared_split_hashes",
+        "saved_config_equals_published_config",
+        "not_debug",
+        "historical_source_hashes_verified"
+      ],
+      "training_ref": "9562fdffa1e42ea87c29890faeaf28fda07747dc",
+      "source_files_verified": 13,
+      "config_sha256": "c0e7d64fd9b05483ccf825b6ebac846c0473aa9eebe8fd9af15c1b42ce4c29b0"
+    },
+    {
+      "run_id": "b_source_edge_k8_s42_seq",
+      "member": "B",
+      "epochs": 200,
+      "seed": 42,
+      "machine": "B-original",
+      "best_val_top1_percent": 79.3,
+      "last10_mean_percent": 79.066,
+      "log_sha256": "7b5522f0f0ec6ec3a19d1aa4a5a155d1c5ad4a4a6057c843f0ac708a12a0da7a",
+      "checks": [
+        "continuous_200_epochs",
+        "45000_train_samples_per_epoch",
+        "finite_metrics",
+        "published_best_and_last10_consistency",
+        "shared_split_hashes",
+        "saved_config_equals_published_config",
+        "not_debug",
+        "historical_source_hashes_verified"
+      ],
+      "training_ref": "9562fdffa1e42ea87c29890faeaf28fda07747dc",
+      "source_files_verified": 13,
+      "config_sha256": "350d8cb2b881b6b4be5a8ebb9510e291c8972cd76a7dfb1dd8623ee5d1617d95"
+    },
+    {
+      "run_id": "c_e3_k4_s42",
+      "member": "C",
+      "epochs": 200,
+      "seed": 42,
+      "machine": "C-main",
+      "best_val_top1_percent": 79.72,
+      "last10_mean_percent": 79.524,
+      "log_sha256": "af8f45499b9e2e59c9a6a733c7a063435074a03fe0eef0e6254453226225de6a",
+      "checks": [
+        "continuous_200_epochs",
+        "45000_train_samples_per_epoch",
+        "finite_metrics",
+        "published_best_and_last10_consistency",
+        "shared_split_hashes",
+        "saved_config_equals_published_config",
+        "not_debug",
+        "historical_source_hashes_verified"
+      ],
+      "training_ref": "d2205b9ada6fd90f19432bca2706da6dbbca800c",
+      "source_files_verified": 17,
+      "config_sha256": "1a2a78db078459415f836ca4dc075923209a9438fdeb710fd084af53c7833ec5"
+    },
+    {
+      "run_id": "c_e4_k4_s42",
+      "member": "C",
+      "epochs": 200,
+      "seed": 42,
+      "machine": "C-main",
+      "best_val_top1_percent": 80.3,
+      "last10_mean_percent": 80.156,
+      "log_sha256": "88c307af16d3a16a3507fa8341ab3322b19cef80a28268f0a65bdceea951d90c",
+      "checks": [
+        "continuous_200_epochs",
+        "45000_train_samples_per_epoch",
+        "finite_metrics",
+        "published_best_and_last10_consistency",
+        "shared_split_hashes",
+        "saved_config_equals_published_config",
+        "not_debug",
+        "historical_source_hashes_verified"
+      ],
+      "training_ref": "d2205b9ada6fd90f19432bca2706da6dbbca800c",
+      "source_files_verified": 17,
+      "config_sha256": "30260cef0d4783bcd8fc16388e5533c97fcd3246e083eb6195a8908a37b473e3"
+    },
+    {
+      "run_id": "c_e4r_k4_s42",
+      "member": "C",
+      "epochs": 200,
+      "seed": 42,
+      "machine": "C-main",
+      "best_val_top1_percent": 79.46,
+      "last10_mean_percent": 79.236,
+      "log_sha256": "d5bcec6b885839da765f74470fc3ff1cf9407ee7425ead5ee8ee249ec1c58311",
+      "checks": [
+        "continuous_200_epochs",
+        "45000_train_samples_per_epoch",
+        "finite_metrics",
+        "published_best_and_last10_consistency",
+        "shared_split_hashes",
+        "saved_config_equals_published_config",
+        "not_debug",
+        "historical_source_hashes_verified"
+      ],
+      "training_ref": "d2205b9ada6fd90f19432bca2706da6dbbca800c",
+      "source_files_verified": 17,
+      "config_sha256": "da1d17f996b1e1a3e9a2d7748a388630f3dfdbfb8e065e02162396990798ce54"
+    },
+    {
+      "run_id": "c_ctrl_e2_k4_s42",
+      "member": "C",
+      "epochs": 200,
+      "seed": 42,
+      "machine": "C-A2",
+      "best_val_top1_percent": 79.84,
+      "last10_mean_percent": 79.726,
+      "log_sha256": "3efa08623aaedaac13ada1c4355d9f77baceccd851fc18a0793a5485ee560b5e",
+      "checks": [
+        "continuous_200_epochs",
+        "45000_train_samples_per_epoch",
+        "finite_metrics",
+        "published_best_and_last10_consistency",
+        "shared_split_hashes",
+        "saved_config_equals_published_config",
+        "not_debug",
+        "historical_source_hashes_verified"
+      ],
+      "training_ref": "77abc2592059eb25c625bcccc93ce7d743fe6d84",
+      "source_files_verified": 17,
+      "config_sha256": "df7886923873dfc581b8691755ba6f33d836ef048a66fe4a3e9a0a14b7240734"
+    },
+    {
+      "run_id": "c_ctrl_e1_s42",
+      "member": "C",
+      "epochs": 200,
+      "seed": 42,
+      "machine": "C-A2",
+      "best_val_top1_percent": 80.02,
+      "last10_mean_percent": 79.818,
+      "log_sha256": "3e96463d67441ee812d4fee000df9d9e65dc53875f5353eabfc9de49e381569d",
+      "checks": [
+        "continuous_200_epochs",
+        "45000_train_samples_per_epoch",
+        "finite_metrics",
+        "published_best_and_last10_consistency",
+        "shared_split_hashes",
+        "saved_config_equals_published_config",
+        "not_debug",
+        "historical_source_hashes_verified"
+      ],
+      "training_ref": "77abc2592059eb25c625bcccc93ce7d743fe6d84",
+      "source_files_verified": 17,
+      "config_sha256": "2959d74e5e9b08a708b020234276a2c9eec813e4c2315596d0b6e484bb588a17"
+    },
+    {
+      "run_id": "c_e3_b05_k4_s42",
+      "member": "C",
+      "epochs": 200,
+      "seed": 42,
+      "machine": "C-A2",
+      "best_val_top1_percent": 79.96,
+      "last10_mean_percent": 79.796,
+      "log_sha256": "48434feb9e3a8e784032305800bd9e3bc1e7aa08cf37f4ac55bbc0abd8123ab3",
+      "checks": [
+        "continuous_200_epochs",
+        "45000_train_samples_per_epoch",
+        "finite_metrics",
+        "published_best_and_last10_consistency",
+        "shared_split_hashes",
+        "saved_config_equals_published_config",
+        "not_debug",
+        "historical_source_hashes_verified"
+      ],
+      "training_ref": "77abc2592059eb25c625bcccc93ce7d743fe6d84",
+      "source_files_verified": 17,
+      "config_sha256": "e67d9acee3aae744aa881f8ee680b368d66e81dfc02b9702af429473651180e7"
+    },
+    {
+      "run_id": "c_e3_b2_k4_s42",
+      "member": "C",
+      "epochs": 200,
+      "seed": 42,
+      "machine": "C-A2",
+      "best_val_top1_percent": 80.16,
+      "last10_mean_percent": 79.806,
+      "log_sha256": "bf1654b7a9d8d34458e44acd6c1654843dd5568a8334bf7d34bfbeae1910ef0a",
+      "checks": [
+        "continuous_200_epochs",
+        "45000_train_samples_per_epoch",
+        "finite_metrics",
+        "published_best_and_last10_consistency",
+        "shared_split_hashes",
+        "saved_config_equals_published_config",
+        "not_debug",
+        "historical_source_hashes_verified"
+      ],
+      "training_ref": "77abc2592059eb25c625bcccc93ce7d743fe6d84",
+      "source_files_verified": 17,
+      "config_sha256": "632b9cc57eadc0760ddf71c3294471e1c27515182944ce42a270c8ebf264c5b4"
+    },
+    {
+      "run_id": "c_e4_r1_k4_s42",
+      "member": "C",
+      "epochs": 200,
+      "seed": 42,
+      "machine": "C-B",
+      "best_val_top1_percent": 80.1,
+      "last10_mean_percent": 79.74,
+      "log_sha256": "17a92f519071f46ea39ec1ea1bee957d78eb0c1301f0fe9e950083f631c937a1",
+      "checks": [
+        "continuous_200_epochs",
+        "45000_train_samples_per_epoch",
+        "finite_metrics",
+        "published_best_and_last10_consistency",
+        "shared_split_hashes",
+        "saved_config_equals_published_config",
+        "not_debug",
+        "historical_source_hashes_verified"
+      ],
+      "training_ref": "77abc2592059eb25c625bcccc93ce7d743fe6d84",
+      "source_files_verified": 17,
+      "config_sha256": "36ebafb77e702e99b8bdd07fe4b8dab4dca6f6f780d554ee8918e3b632e9abbb"
+    },
+    {
+      "run_id": "c_e4_r3_k4_s42",
+      "member": "C",
+      "epochs": 200,
+      "seed": 42,
+      "machine": "C-B",
+      "best_val_top1_percent": 80.52,
+      "last10_mean_percent": 80.408,
+      "log_sha256": "1f563fb3ee797986dbb5eb7e8e985baf6463b61687ff35d95da9170bc70a9c9b",
+      "checks": [
+        "continuous_200_epochs",
+        "45000_train_samples_per_epoch",
+        "finite_metrics",
+        "published_best_and_last10_consistency",
+        "shared_split_hashes",
+        "saved_config_equals_published_config",
+        "not_debug",
+        "historical_source_hashes_verified"
+      ],
+      "training_ref": "77abc2592059eb25c625bcccc93ce7d743fe6d84",
+      "source_files_verified": 17,
+      "config_sha256": "4838e7edf1ae9c5405d69d66fadeecf94aa1893f7830ee3c0ae222b80ca08b6c"
+    },
+    {
+      "run_id": "c_e4_mu0_k4_s42",
+      "member": "C",
+      "epochs": 200,
+      "seed": 42,
+      "machine": "C-B",
+      "best_val_top1_percent": 79.92,
+      "last10_mean_percent": 79.75,
+      "log_sha256": "15db55c258594c615d45faa7942a1832362106e49241cb572ef87238b0a0c4bb",
+      "checks": [
+        "continuous_200_epochs",
+        "45000_train_samples_per_epoch",
+        "finite_metrics",
+        "published_best_and_last10_consistency",
+        "shared_split_hashes",
+        "saved_config_equals_published_config",
+        "not_debug",
+        "historical_source_hashes_verified"
+      ],
+      "training_ref": "77abc2592059eb25c625bcccc93ce7d743fe6d84",
+      "source_files_verified": 17,
+      "config_sha256": "eadb33cd158cbfdb85c20268664e6c1e518bd4d3aa01e2f34d81a29a8795b540"
+    },
+    {
+      "run_id": "c_e4_mu02_k4_s42",
+      "member": "C",
+      "epochs": 200,
+      "seed": 42,
+      "machine": "C-B",
+      "best_val_top1_percent": 80.04,
+      "last10_mean_percent": 79.814,
+      "log_sha256": "d75618195cee0c575c21db3421eb0130b500ca2f89d0aec15693edeef9248bd3",
+      "checks": [
+        "continuous_200_epochs",
+        "45000_train_samples_per_epoch",
+        "finite_metrics",
+        "published_best_and_last10_consistency",
+        "shared_split_hashes",
+        "saved_config_equals_published_config",
+        "not_debug",
+        "historical_source_hashes_verified"
+      ],
+      "training_ref": "77abc2592059eb25c625bcccc93ce7d743fe6d84",
+      "source_files_verified": 17,
+      "config_sha256": "70a1cc05284611ee329c8baa18c92733e5c18ba1207e333b792cd2db9667542f"
+    }
+  ],
+  "split": {
+    "train": 45000,
+    "validation": 5000,
+    "disjoint": true,
+    "complete_partition": true
+  },
+  "total_formal_runs": 18,
+  "unique_seeds": [
+    42
+  ],
+  "checkpoint_files_locally_available": false,
+  "source_hashes_independently_verified": true,
+  "contrasts": [
+    {
+      "candidate": "c_e4_k4_s42",
+      "reference": "c_e3_k4_s42",
+      "same_host": true,
+      "independent_training_seeds": 1,
+      "best_difference_pp": 0.58,
+      "last10_difference_pp": 0.632,
+      "significance": "not estimated: one training seed; epochs are correlated"
+    },
+    {
+      "candidate": "c_e4_k4_s42",
+      "reference": "c_e4r_k4_s42",
+      "same_host": true,
+      "independent_training_seeds": 1,
+      "best_difference_pp": 0.84,
+      "last10_difference_pp": 0.92,
+      "significance": "not estimated: one training seed; epochs are correlated"
+    },
+    {
+      "candidate": "c_e4_k4_s42",
+      "reference": "c_ctrl_e1_s42",
+      "same_host": false,
+      "independent_training_seeds": 1,
+      "best_difference_pp": 0.28,
+      "last10_difference_pp": 0.338,
+      "significance": "not estimated: one training seed; epochs are correlated"
+    },
+    {
+      "candidate": "c_e4_r3_k4_s42",
+      "reference": "c_e4_k4_s42",
+      "same_host": false,
+      "independent_training_seeds": 1,
+      "best_difference_pp": 0.22,
+      "last10_difference_pp": 0.252,
+      "significance": "not estimated: one training seed; epochs are correlated"
+    },
+    {
+      "candidate": "c_e3_b2_k4_s42",
+      "reference": "c_ctrl_e2_k4_s42",
+      "same_host": true,
+      "independent_training_seeds": 1,
+      "best_difference_pp": 0.32,
+      "last10_difference_pp": 0.08,
+      "significance": "not estimated: one training seed; epochs are correlated"
+    },
+    {
+      "candidate": "b_source_edge_k4_s42_seq",
+      "reference": "b_dual_edge_k1_s42_seq",
+      "same_host": true,
+      "independent_training_seeds": 1,
+      "best_difference_pp": 0.3,
+      "last10_difference_pp": 0.404,
+      "significance": "not estimated: one training seed; epochs are correlated"
+    }
+  ],
+  "limitations": [
+    "Log/config/source consistency does not prove that the historical training was executed.",
+    "Historical checkpoints are not in the repository; their reported re-evaluations were not independently repeated here.",
+    "No official-test result is inferred from validation logs."
+  ]
+}

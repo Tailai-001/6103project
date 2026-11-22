@@ -1,0 +1,6 @@
+run_id,policy,k,gamma,seed,epochs,best_val_top1_percent,delta_control_pp,val_macro_f1,best_epoch,val_loss,augmentation_ms_per_batch,sum_epoch_seconds,process_wall_seconds,log_path,checkpoint_path
+b_dual_edge_k1_s42_seq,dual_edge,1,0.5,42,200,80.06,0.0,0.7995569147549655,186,0.7959105394721031,13.951475918293,2387.163425683975,2794.556284584105,logs/b_dual_edge_k1_s42_seq.csv,checkpoints/b_dual_edge_k1_s42_seq/best.pth
+b_dual_edge_k4_s42_seq,dual_edge,4,0.5,42,200,79.64,-0.42,0.7955626112767139,191,0.7785206800103187,14.13564220070839,2557.0676364973187,3027.985941670835,logs/b_dual_edge_k4_s42_seq.csv,checkpoints/b_dual_edge_k4_s42_seq/best.pth
+b_source_edge_k4_s42_seq,source_edge,4,0,42,200,80.36,0.3,0.8022936636936407,197,0.765662005507946,14.752925783395767,2385.905377060175,2777.442407630384,logs/b_source_edge_k4_s42_seq.csv,checkpoints/b_source_edge_k4_s42_seq/best.pth
+b_dual_edge_k8_s42_seq,dual_edge,8,0.5,42,200,79.62,-0.44,0.7945754812692399,198,0.7703106017112732,14.776594936847687,2423.9918023347855,2802.079488351941,logs/b_dual_edge_k8_s42_seq.csv,checkpoints/b_dual_edge_k8_s42_seq/best.pth
+b_source_edge_k8_s42_seq,source_edge,8,0,42,200,79.3,-0.76,0.7923526132471599,189,0.7979284377574921,14.376496374607086,2384.1529526412487,2722.027593433857,logs/b_source_edge_k8_s42_seq.csv,checkpoints/b_source_edge_k8_s42_seq/best.pth

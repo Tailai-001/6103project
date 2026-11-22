@@ -1,78 +1,77 @@
-# Seam-Aware CutMix 实验协议草案
+# Implemented experiment protocol
 
-状态：**全方法协议仍为 draft，待 A/B/C/D 对齐并冻结**。截至 2026-11-19，A 的 E0/E1 框架与 200 epoch 日志已在主分支上传，B 的 E2/E2-S、测试与实验记录位于待合并 PR #1；E3/E4/E4-R 尚未见实现或实验交付。当前完成情况、证据和验证限制见[根 README 第 0 节](../README.md#0-从这里开始)。下文保留全方法的目标协议；部分设置已在 A/B 阶段采用，未冻结的接缝与形状约定仍属计划。原始项目说明留作历史归档。
+This document records the code and completed experiments in the integrated submission. It supersedes the development draft. The original assignment brief remains archived in [project_brief.md](project_brief.md). Commands are in [the README](../README.md) and [running guide](running.md).
 
-## 实验与职责
+## Dataset and model
 
-| ID | policy | 内容 / 负责人 |
-| --- | --- | --- |
-| E0 | none | 普通训练 / A |
-| E1 | random | Original CutMix / A |
-| E2 | dual_edge | Source − γ×Target 边缘评分 / B |
-| E3 | seam_aware | E2 − β×接缝代价，保持矩形 / C |
-| E4 | seam_dp | E3 矩形附近的受限 DP 边界 / C |
-| E2-S | source_edge | 单侧内容消融 / B |
-| E4-R | seam_random | 同一 E3 矩形上的随机边界 / C，D 核对 |
+- CIFAR-100: the official 50,000-image training partition is divided into 45,000 training and 5,000 validation images using the committed seed-42 stratified indices. Each class contributes 450/50 images. The split is shared by every experiment.
+- Training images: random 32×32 crop with padding 4, random horizontal flip, tensor conversion to RGB [0,1], optional mixing, then channel normalization. Validation uses clean tensor conversion and the same normalization, without mixing or random crop/flip.
+- Mean `(0.5071, 0.4867, 0.4408)`, standard deviation `(0.2675, 0.2565, 0.2761)`.
+- Four-stage ResNet-18 `[2,2,2,2]`, 3×3 stride-1 stem, no initial max-pool, 100-class head. It is a CIFAR adaptation of torchvision ResNet-18, not the upstream three-stage CIFAR ResNet.
+- All reported accuracies are validation scores. The official 10,000-image test partition has not been evaluated.
 
-旧方案的双侧 E3 对应新 E2，不与新接缝 E3 混称。E0–E3 和有效消融是基础交付，E4 是核心扩展目标；解释 DP 收益需有 E4-R 等控制。A 统一训练，D 负责实验记录与分析，E 汇总报告。没有训练结果时不填指标。
+## Training and selection
 
-## 项目约束
+One `train.py` loop handles `none`, `random`, `source_edge`, `dual_edge`, `seam_aware`, `seam_dp`, and `seam_random`. Formal runs use 200 epochs, batch 128, SGD with learning rate 0.1, momentum 0.9, weight decay 0.0005 and cosine decay. Mixing uses alpha=1 and per-example probability p=0.5. Short smoke configurations are separate and never enter the formal result tables.
 
-- CIFAR-100；四 stage `[2,2,2,2]` ResNet-18，3×3 stride 1 stem，无初始 MaxPool，100 类。
-- train/validation 从官方训练集固定划分；测试集只用于最终评价。验证/测试 transform 不含随机 crop/flip 或混合增强。
-- 一个训练循环支持全部 policy，所有方法使用相同模型、训练预算与数据设置；各方法的验证集搜索预算可比较并记录。
-- Source 从未修改 batch 读取；M=1 为 Source，图像为 `(1−M)*Target + M*Source`。最终标签权重为 `1−sum(M)/(H*W)`，逐样本求值。
-- γ、β、K、r、μ 和其他参数只用验证集选择，checkpoint 的选择指标与同分规则预先固定。
+The best checkpoint is selected by maximum clean validation Top-1; strict improvement keeps the earliest epoch on a tie. The final checkpoint is also saved. We report the final 10-epoch mean as a secondary summary, without treating correlated epochs as independent runs. Configuration, environment, split hashes, source hashes and CSV logs accompany the recorded runs. New output names cannot overwrite existing runs. Resume training is not implemented.
 
-## 开发接口与并行启动
+The method configurations record the values actually used, rather than claiming globally optimal parameters. Ablations and exploratory choices are identified in the result tables. Official test scores were not used for selection.
 
-接口草案：`cutmix_batch(images, labels, policy, alpha, p, k, gamma, beta=0.0, seam_radius=0, seam_mu=0.0)`，返回 mixed images、两组标签、长度 N 的面积权重和 metadata；A/B/C/D 冻结最终 schema。
+## Shared masks, labels and sampling
 
-B 独立开发 Sobel 与候选；C 可先用两张 32×32 模拟图像和固定矩形开发接缝/Mask；A 提供最小训练骨架；D 先写诊断与日志消费工具；E 同步阅读和搭报告。无需等待完整 baseline 训练结束。
+For target image A, source image B, and a binary mask M=1 where B is used:
 
-实现前确定 NCHW、输入范围、随机源和坐标；矩形采用 `(top,left,bottom,right)` 半开区间。Sobel 与 RGB 接缝使用几何增强后、模型标准化前的图像；如已标准化需还原。metadata 至少能追溯最终 Mask、基础矩形、实际面积和回退，诊断记录粒度与内存成本需说明。
+`mixed = (1 - M) * A + M * B`
 
-## 内容与接缝评分
+The target label weight is `lambda_actual = 1 - sum(M)/(H*W)`. The loss is the per-example weighted sum of the two cross-entropies, averaged over the batch. Sources are always read from the unmodified input batch. Coordinates `(top,left,bottom,right)` are half-open.
 
-边缘：B 提供 Source/Target 的区域平均 Sobel 得分，采用相同的图像级尺度规则。常量图像输出有限值，明确 eps。E2 评分为 `edge_source − gamma*edge_target`，E3 再减去 `beta*seam_cost`。
+The E1 sampler retains A's implementation of the original CutMix center-and-clip rule. Sampling uses a torch permutation, per-example mixing decisions, numpy Beta draws, and integer rectangle coordinates. Self-pairing and repeated proposals are allowed. The source and target use the same paste coordinates.
 
-接缝：在 `[0,1]` RGB 上，枚举图像内所有跨 Mask 的四邻接像素对，取 Source 内侧和 Target 外侧的绝对颜色差，按通道数与有效像素对数求平均。只统计有效图像邻接，不使用图像外填充值；矩形边界接触图像边缘时同样适用。
+Candidate zero is the E1 rectangle. E2/E3 generate K−1 translations with the same actual width and height, so E1–E3 share the rectangle area. Candidate sampling uses an independent clone of the device RNG state and does not advance the global stream. K=4 candidates are a prefix of K=8 under the same seed and device. Ties select the first candidate. CPU and CUDA random streams are not assumed bitwise identical.
 
-空/满 Mask 没有内部接缝，边界指标为不适用并单独计数；不要将其填零降低均值。明确接缝评分的归一化与边缘评分尺度；不逐候选独立缩放。D 评价使用最终 Mask 的原始 RGB 跳变，不能只报经过归一化的优化目标。
+## Policies and parameters
 
-## E1–E3 的矩形面积匹配
+| ID | Policy | Implemented behavior |
+|---|---|---|
+| E0 | none | No image mixing |
+| E1 | random | Original random rectangular paste |
+| E2-S | source_edge | Maximize normalized source Sobel content |
+| E2 | dual_edge | Maximize source content minus gamma times target content |
+| E3 | seam_aware | E2 score minus beta times normalized RGB seam cost |
+| E4 | seam_dp | E3 rectangle followed by constrained joint boundary DP |
+| E4-R | seam_random | Same E3 rectangle and geometric rules, with random DP costs |
 
-建议先按官方中心采样/裁剪得到基础矩形，固定实际高宽。候选 0 是原矩形，其余 K−1 个通过平移生成，均完整位于图像内；Source/Target 使用相同坐标。E1 选候选 0，E2/E3 从同一候选规则评分选择。候选重复、同分和与自身配对的规则需冻结。
+Main edge/seam configurations use K=4 and gamma=0.5; E2-S uses gamma=0. E3/E4 use beta=1. E4 uses radius=2, bend penalty mu=0.05, minimum width=2 and relative area budget=0.2. E4-R uses its training-image shape-calibrated bend penalty 0.225. B's K=1/4/8 and C's beta/radius/mu ablations are preserved in separate configuration files.
 
-这种方案在相同基础随机样本下保留 E1–E3 的实际面积分布。若改用其他采样方案，需提供匹配规则的随机对照。不能只保持名义 λ 分布相同却忽略裁剪后面积。
+### Edge and seam scores
 
-## E4 与 E4-R 的形状/面积控制
+Sobel operates on grayscale `0.299R+0.587G+0.114B`, with replicate padding and gradient magnitude. Each edge map is normalized by its image mean, clamped at 1e-6. Constant inputs produce zero edges. Region means use float64 integral accumulation; scores retain the chosen working precision.
 
-两者从相同的 E3 选定矩形出发，上下边界固定，左右边界限制在半径 r 的带内，连续两行位移至多 1 像素。r=2 仅为初始探索建议，不是固定协议。
+The raw seam cost is the mean channel-wise absolute RGB difference over all in-image, four-neighbor pixel pairs crossing the final mask. Values are calculated before model normalization. Image exterior is not an extra target pixel. Empty/full masks with no internal seam are counted as not applicable in reporting.
 
-C 冻结局部接缝代价、弯曲惩罚 μ、最小宽度、端点规则、面积偏移预算及其单位、路径求解和回退方式。左右路径不能相交；可以联合约束求解，或在固定第一条路径后约束第二条，但需说明优化范围和顺序影响。没有可行解时回退基础矩形，并记录回退原因与比例。
+E3 normalizes the rectangle seam cost by the mean intrinsic neighbor difference of the source and target images, with an RGB-scale floor of 1e-3. This is image-level normalization, not a separate rescaling per candidate. Its score is `source_edge - gamma*target_edge - beta*normalized_seam`.
 
-DP 若优化的是局部代理代价，不宣称对完整接缝全局最优。最终 Mask 重新统计所有有效接缝，包含上下边界与弯曲造成的水平连接。
+### Boundary search and random control
 
-E4-R 只随机化边界选择，沿用相同的基础矩形、位移带、连续性、最小宽度、面积预算和回退约束。**同一面积预算不等于相同面积分布。** D 还需报告实际面积比例、周长与回退分布；若偏差明显，应在参数冻结前建立匹配采样/分层分析方案，并在最终结果中说明残余偏差。重算标签只能保证标签正确。
+E4 holds top and bottom fixed and jointly optimizes the left/right row offsets within the radius band. Each path moves at most one pixel between adjacent rows. Joint states enforce minimum width and prevent intersection; bending is penalized. This solves the defined vertical-edge proxy, not a global optimum of the full final boundary.
 
-## 尚需冻结的实验设置
+The proposed final area must satisfy `abs(final_area - base_area) <= area_budget * base_area`; otherwise the method returns the E3 rectangle. Status codes record accepted, no patch, too small, infeasible and area fallback cases. Full final-mask seam cost and label weights are recomputed after this decision.
 
-- 训练/验证比例、是否分层、划分 seed、有序索引文件与校验值。
-- 运行 seed 列表、epoch、batch size、优化器、学习率、scheduler、weight decay、精度、设备。
-- α、p、batch/逐样本采样粒度、取整/裁剪规则、K、γ 与 β 的候选范围和搜索预算。
-- Sobel 灰度转换、padding、梯度幅值、归一化、接缝尺度与 eps。
-- E4/E4-R 的全部几何/面积参数与回退行为，是否匹配周长及如何处理残余分布差异。
-- checkpoint 选择规则、日志/metadata schema、指标单位与聚合方式。
-- 计时预热次数、重复数、GPU 同步、是否包含数据读取，以及混合样本诊断的覆盖范围。
+E4-R starts at the same E3 rectangle, uses the same feasible geometry and fallback rules, and replaces the image costs with random costs. Its bend penalty was calibrated on training-image shape statistics, without classifier/validation labels. Equal constraints do not imply identical area, perimeter or fallback distributions; the measured residual differences are retained in the diagnostics.
 
-## 检查、记录与结果解释
+## Measurements and completed evidence
 
-- 固定配对、候选、归一化和同分规则，检查 dual γ=0 → source；seam_aware β=0 → dual；seam_dp r=0 → seam_aware。K=1 只取消多候选筛选，不取消 E4 的形状优化。
-- 检查图像替换与 Mask 面积、零/极小区域、图像边缘、常量图像、空/满 Mask、无可行路径、左右不交叉、连续性、最小宽度、面积预算、设备和 dtype。
-- 主指标 Test Top-1 Accuracy（%）；辅助 Macro-F1、train/validation loss、接缝跳变、面积/周长分布、回退率、每批增强耗时与完整训练耗时。
-- 增强计时包含 Sobel、候选、评分、DP/随机路径、Mask 和粘贴；GPU 计时预热与同步，硬件/精度相同。边界诊断耗时是否计入需明确。
-- 每次运行登记 run_id、方法编号、seed、git SHA、完整配置、划分校验值、环境/设备、状态、验证选择依据、原始日志与 checkpoint。失败运行和参数搜索同样保留。
-- 多 seed 保留每次原值，明确标准差定义；单 seed 不伪造标准差。混合样本训练 accuracy 不替代干净验证评价。
-- 优先消融接缝 β（含 0）、K=1/4/8、E2-S；扩展比较路径 r/μ 与 E4-R。较低接缝跳变不保证分类提升，可能削弱正则化或多样性。
-- 自建噪声/模糊/遮挡测试须注明生成规则，不冒称标准鲁棒性基准结果。未完成 E4 就不宣称验证了 DP 的作用。
+- **21 completed formal runs:** 18 original seed-42 runs across the labeled A/B/C environments, plus 3 seed-43 E1/E4/E4-R runs on one M5 Max host. Each contains 200 epochs and 45,000 training samples per epoch. Distinct hosts/backends prevent interpreting them as a controlled two-seed study.
+- **Boundary audit:** 2,560 paired training inputs, 20 batches of 128, forced mixing p=1. RGB jumps are aggregated by eligible boundary-pair counts. Crop-padding sensitivity uses a transformed validity channel; black color alone is not a padding detector. Area, boundary length, bending, edge attachment and fallbacks are also recorded.
+- **Paired sensitivity:** batch bootstrap over the raw paired audit, 4,000 draws, with padding, newly attached image-edge and observational shape-subset analyses. These intervals concern augmentation measurements, not classification or training-seed uncertainty.
+- **Efficiency:** synchronized augmentation-only timings with warmup, and separately full training-process time. Host, batch size, repetition counts and timing scope accompany the source files. No inference-time model is added.
+- **Accuracy/F1:** original logs and checkpoint re-evaluation records are retained. New same-host checkpoints were independently reloaded on CPU and matched the saved best-validation scores. Public predictions permit recomputing confirmation Top-1 and Macro-F1 without distributing the weights.
+
+The evidence supports lower average RGB seam discontinuity and classification near the CutMix baseline, rather than a stable classification improvement. Complete source data and scope are in [RESULTS_D.md](../RESULTS_D.md) and [RESULTS_AUDIT.md](../RESULTS_AUDIT.md).
+
+## Checks and code provenance
+
+Correctness tests cover mask/pixel/label consistency, beta=0 and radius=0 reductions, K=1 equivalence, shared sampling/RNG behavior, a slow seam reference, brute-force DP comparisons, geometry/fallback constraints, checkpoint safety and the shared training/evaluation path. Accelerator-specific checks skip explicitly when hardware is absent.
+
+The original CutMix snapshot remains byte-for-byte unchanged at commit `2d8eb68faff7fe4962776ad51d175c3b01a25734`. Its [manifest](../third_party/cutmix_provenance.json), LICENSE and NOTICE are preserved. [NOTICE.md](../NOTICE.md) maps adaptations and attribution. The original A handoff remains archived; the top-level code is the integrated implementation.

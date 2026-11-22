@@ -1,3 +1,5 @@
-# 结果图
+# Result figures
 
-存放由真实实验日志生成的收敛、效率、消融和增强可视化图片；同时记录数据来源与生成脚本。当前没有图表结果。
+`d_validation_curves.png` and `d_efficiency.png` come from the original formal logs and recorded synchronized timings. `d_boundary_distributions.png` comes from D's raw paired audit. `d_mixed_examples.png` contains actual mixed training images. B/C retain their additional figures in their own result directories.
+
+`python analysis/reproduce_results.py --out-dir outputs/reproduced` regenerates the numeric-result figures in a separate output directory, together with the confirmation curves. Regenerating mixed-image examples instead requires the actual dataset. [All source evidence](../README.md) · [Running guide](../../docs/running.md).

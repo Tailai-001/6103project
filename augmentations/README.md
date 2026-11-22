@@ -1,11 +1,14 @@
 # 增强模块（B/C）
 
-当前没有算法实现。B 负责 `edge_utils.py`、`source_edge.py`、`dual_edge.py` 与共享候选；C 负责 `seam_utils.py`、`seam_aware.py`、`seam_dp.py` 和 `seam_random.py`。文件名均为待实现交付物。
+B 已实现 `edge_utils.py`、`candidates.py`、`source_edge.py`、`dual_edge.py`，统一入口为 `cutmix_batch`。完整数学约定、metadata 和 C 接入示例见 [README_B.md](../README_B.md)。`cutmix.py` 原样复用 A E1。
 
-统一接口草案：`cutmix_batch(images, labels, policy, alpha, p, k, gamma, beta=0.0, seam_radius=0, seam_mu=0.0)`。policy 为 `none / random / source_edge / dual_edge / seam_aware / seam_dp / seam_random`；返回值建议为 mixed images、两组 labels、逐样本实际面积权重与 metadata。A/B/C/D 在实现前冻结 schema，增强函数不运行分类模型。
+C 已实现 `seam_utils.py`、`seam_aware.py`（E3）、`seam_dp.py`（E4）和 `seam_random.py`（E4-R），全部共用 B 的候选、Sobel 分数与同分规则，并按最终 Mask 重算标签权重。七个 policy 均已接入 `cutmix_batch`，未知 policy 报 `ValueError`。设计、参数、测试和真实数据诊断见 [README_C.md](../README_C.md)。
 
-实验对应：E0 none、E1 random、E2 dual_edge、E3 seam_aware、E4 seam_dp；E2-S 为 source_edge 消融，E4-R 为 seam_random 形状对照。旧双侧 E3 已归入新 E2。
+| 文件 | 内容 |
+| --- | --- |
+| `seam_utils.py` | 跨 Mask 四邻接像素对的 RGB 接缝代价 `D_seam`（图外不计、空/满 Mask 计数为 0 表示不适用）、图像级归一化 `D_hat`、候选批量计算 |
+| `seam_aware.py` | E3：`edge_B − γ·edge_A − β·D_hat`；β=0 与 `dual_edge` 逐位一致，不额外消耗随机数 |
+| `seam_dp.py` | E4：每行左右边界局部代价、左右边联合 DP（最小宽度、不交叉、弯曲惩罚 μ）、面积预算与回退状态码、最终 Mask 的完整 `D_seam` 重算；`seam_radius=0` 与 E3 逐位一致 |
+| `seam_random.py` | E4-R：同一 E3 矩形与全部约束/回退规则，DP 改用随机代价；`seam_random_mu` 为其单独校准的弯曲惩罚 |
 
-B/C 共用 Sobel、图像级归一化、候选与同分规则。E4/E4-R 从同一 E3 矩形出发；Source 从未修改 batch 读取，Mask=1 表示 Source。metadata 应支持返回最终 Mask、基础矩形、实际面积、边界计数、路径/回退状态；按需记录诊断，避免影响计时解释。
-
-接缝代价使用 `[0,1]` RGB 的有效跨 Mask 四邻接像素对及通道平均，不计图像外填充；空/满 Mask 的边界指标为不适用。DP 要约束左右路径不交叉，并对最终 Mask 重新计算完整边界代价。坐标、退化与面积控制见 [实验协议](../docs/experiment_protocol.md)。
+`cutmix_batch` 的 `seam_radius` 默认是 0，E4/E4-R 的配置必须显式设置，否则会退化为 E3。
