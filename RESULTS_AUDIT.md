@@ -36,7 +36,7 @@ RGB 指标为跨最终二值 Mask 边界的四邻接像素对之通道平均绝�
 
 ## 已补：本地训练与评价可靠性检查
 
-- 原有测试 106 项通过、1 项 CUDA 专用测试跳过；新增检查后 **131 项通过、1 项 CUDA 专用测试跳过**，含真实 Apple MPS 上的多步 ResNet 反向训练。
+- 原有测试 106 项通过、1 项 CUDA 专用测试跳过；新增检查后 **133 项通过、1 项 CUDA 专用测试跳过**，含真实 Apple MPS 上的多步 ResNet 反向训练与分类配对计数核对。
 - 同一随机状态下，E1/E3/E4/E4-R 的供体、基础矩形、后续输入随机流保持一致；标签权重仍由最终 Mask 面积决定。
 - 新增可选 `--device mps --augmentation-device cpu`：增强保留 CPU 上原始 float64 计算，模型用 Apple GPU；所有方法继续共用一个训练循环。原有 CUDA 默认路径保留。
 - 本机 torch 2.5.1 预检发现异步 CPU→MPS 传输会导致错误损失；改成同步传输后，多步训练与 CPU 参考结果一致。修复仅涉及新增本地执行路径。失败的预检记录明确排除，不能作为分类结果。
@@ -44,19 +44,33 @@ RGB 指标为跨最终二值 Mask 边界的四邻接像素对之通道平均绝�
 
 结果见 [测试记录](results/local_audit/final_tests.txt)、[预检排除说明](results/local_audit/preflight_notes.json)。`third_party/CutMix-PyTorch/` 和 A/B/C 原始训练结果保持原样。
 
-## 正在补：同机 E1 / E4 / E4-R 分类复核
+## 已完成：同机 E1 / E4 / E4-R 分类复核
 
 采用新的 **seed 43**，本机 Apple M5 Max，三臂使用相同 CPU 增强 + MPS 模型路径，各跑 200 轮。配置在看到本次正式验证分数前冻结，沿用 C 默认 E4 `r=2, μ=0.05` 与训练集形状校准的随机臂；不换成消融中事后较好的 r=3。相同 45,000/5,000 固定划分，官方测试集未评价。
 
-详细 [实验计划](results/local_audit/EXPERIMENT_PLAN.md) 已在正式启动前提交。训练完成后补入完整日志、最佳/最后/末 10 轮指标、独立加载最佳权重的验证评价。权重与数据只留本地。
+详细 [实验计划](results/local_audit/EXPERIMENT_PLAN.md) 已在正式启动前提交。三组均完成 200 轮、每轮 45,000 张训练图像，退出码均为 0；最佳 checkpoint 已独立加载到 CPU，在同一干净验证集上复评，准确率全部与训练日志完全一致。
 
-这项实验可直接填上原有“没有同机三臂对照”的缺口，并提供一个新 seed 的独立复核；仍不能据此声称多 seed 统计显著性，也不会消除 E4/E4-R 的最终形状差异。
+| 方法 | 最佳 epoch | 最佳验证 Top-1 | 最后 1 轮 | 末 10 轮均值 | CPU 复评 Macro-F1 |
+|---|---:|---:|---:|---:|---:|
+| E1 Original CutMix | 192 | 79.92% | 79.78% | 79.824% | 0.79818 |
+| E4 DP boundary | 195 | 79.78% | 79.62% | 79.546% | 0.79768 |
+| E4-R Random boundary | 197 | 80.08% | 79.84% | 79.846% | 0.79964 |
+
+本次 **E4 − E1 = −0.14 个百分点**，末 10 轮均值差为 **−0.278 个百分点**；**E4 − E4-R = −0.30 个百分点**，末 10 轮差为 **−0.300 个百分点**。因此本次分类结果没有显示 E4 优势，且不是只在最佳 epoch 的口径下如此。
+
+对同一批 5,000 张验证图像，E4 相对 E1 独自答对 275 张、反向为 282 张；E4 相对 E4-R 独自答对 257 张、反向为 272 张。净差为 7 和 15 张，与准确率差一致。这是描述性的配对计数，不能当作跨训练 seed 的显著性检验。
+
+![Local validation curves](results/local_audit/local_validation_curves.png)
+
+完整 [结果表](results/local_audit/local_confirmation.md)、[CSV](results/local_audit/local_confirmation.csv)、[含 checkpoint 哈希的 JSON](results/local_audit/local_confirmation.json)、[三份完整日志](results/local_audit/raw_logs/)、[运行时配置与环境](results/local_audit/run_metadata/)、[逐图验证预测](results/local_audit/validation_predictions.csv) 已保存。权重和数据只留本地。三臂仍是顺序训练；E4-R 后半程单轮耗时明显增加，本机整段墙钟耗时不宜直接作为算法效率比较，效率分析继续引用 D 的同环境同步增强计时。
+
+这项实验填上了“没有同机三臂对照”的缺口，并提供一个新 seed 的独立复核。旧 seed-42 的 C-main 上 E4 对 E4-R 为 +0.84 个百分点，本次 seed-43 则为 −0.30 个百分点，**效果方向没有稳定复现**。由于主机与执行后端也改变了，不能把这称为严格控制的双 seed 实验，也不能归因于 seed 本身。仍需多 seed 同环境研究才能判断小差异；本次不继续按验证结果挑配置或重跑。
 
 ## 当前可用于报告的结论
 
 1. **实现和实验交付有实物证据。** 已有 18 份正式训练日志及相关代码；本次追加测试通过，未发现足以否定既有结果的实现错误。缺少历史权重的部分仍不能独立复评。
 2. **接缝更平滑有较明确的直接证据。** 新增分析支持平均 RGB 边界质量改善，且不完全由填充或贴边解释；这不等于语义更正确。
-3. **分类是否优于 Original CutMix 尚待本次同机复核。** 原有 E4 80.30% 对不同主机 E1 80.02%/80.52%，不能选择有利对照后宣称胜出。原有同机 E4 对 E4-R 为 +0.84 个百分点，只支持该次单 seed 运行；随机臂形状也并非完全匹配。
+3. **没有证据表明接缝改善带来稳定的分类增益。** 本次同机 E4 为 79.78%，低于 E1 的 79.92% 和 E4-R 的 80.08%；与旧 E4 对随机边界的正向结果方向不同。可报告“低层 RGB 连续性改善，分类提升未稳定复现”，不能写“我们稳定超过 CutMix”，也不能据一个 seed 反过来断言 E4 普遍更差。官方测试与多 seed 显著性均未建立。
 
 ## 复现本次补充
 
@@ -67,4 +81,6 @@ python analysis/paired_boundary_evidence.py
 python analysis/plot_paired_boundary_evidence.py
 # 需已有本地 CIFAR-100；三个正式运行按顺序执行，拒绝覆盖已有运行记录
 python scripts/run_local_confirmation.py
+# 完成后独立复评最佳权重，并导出小型证据与曲线；不读取官方测试集
+python analysis/compile_local_confirmation.py
 ```

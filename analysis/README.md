@@ -9,3 +9,4 @@
 - `audit_training_evidence.py` 独立核对 18 份正式日志、已存配置与历史源码哈希。
 - `paired_boundary_evidence.py` 对 D 的原始逐图 CSV 做配对 batch bootstrap 和填充／贴边／形状敏感性分析；`plot_paired_boundary_evidence.py` 生成对应图。区间不能用于推断分类性能。
 - 本地同机三臂复核与新增测试见 [RESULTS_AUDIT.md](../RESULTS_AUDIT.md)。
+- `compile_local_confirmation.py` 在三组全部完成后检查冻结配置、源码、完整日志与划分，独立在 CPU 加载最佳 checkpoint 复评，导出小型日志、指标、配对预测与曲线。只用验证集。

@@ -1,0 +1,95 @@
+{
+  "scope": "same-host new-seed validation confirmation; official test not evaluated",
+  "independent_local_training_seeds": 1,
+  "runs": [
+    {
+      "arm": "e1",
+      "run_id": "local_confirm_e1_s43",
+      "seed": 43,
+      "epochs": 200,
+      "best_epoch": 192,
+      "logged_best_top1_percent": 79.92,
+      "logged_last_top1_percent": 79.78,
+      "logged_last10_mean_percent": 79.824,
+      "cpu_checkpoint_top1_percent": 79.92,
+      "cpu_checkpoint_macro_f1": 0.7981807204423683,
+      "cpu_checkpoint_loss": 0.77726950905025,
+      "checkpoint_sha256": "809c465c22c734511f36f9853646c9c0d840c16a851a18b659e95af72e03b334",
+      "log_sha256": "3300e2edc92c7506c99b2229750ec0d2e199734764a732ad440fb27da9c9df58",
+      "cpu_minus_logged_correct_images": 0,
+      "elapsed_seconds": 4088.038745164871
+    },
+    {
+      "arm": "e4",
+      "run_id": "local_confirm_e4_s43",
+      "seed": 43,
+      "epochs": 200,
+      "best_epoch": 195,
+      "logged_best_top1_percent": 79.78,
+      "logged_last_top1_percent": 79.62,
+      "logged_last10_mean_percent": 79.546,
+      "cpu_checkpoint_top1_percent": 79.78,
+      "cpu_checkpoint_macro_f1": 0.7976777948369432,
+      "cpu_checkpoint_loss": 0.7638973635315895,
+      "checkpoint_sha256": "dec1bebbe51cab9d8683501a03ba4d846583d0429333cbd56944c07dc357b2a4",
+      "log_sha256": "61d043d1c531b6d173fb32363b08f60a452334076e81f4f915c70e78d6472c83",
+      "cpu_minus_logged_correct_images": 0,
+      "elapsed_seconds": 5170.940073013306
+    },
+    {
+      "arm": "e4r",
+      "run_id": "local_confirm_e4r_s43",
+      "seed": 43,
+      "epochs": 200,
+      "best_epoch": 197,
+      "logged_best_top1_percent": 80.08,
+      "logged_last_top1_percent": 79.84,
+      "logged_last10_mean_percent": 79.846,
+      "cpu_checkpoint_top1_percent": 80.08,
+      "cpu_checkpoint_macro_f1": 0.7996378175463359,
+      "cpu_checkpoint_loss": 0.7751079563498497,
+      "checkpoint_sha256": "3070e25bde3b362fdb5a294ef4da66e661a781e4e22a9613a0ca34f6e0d3c59b",
+      "log_sha256": "6ef1796e9fa17657a2e7872c6de4226fd5337fbb30fd65e10e06ebd94ec59c6b",
+      "cpu_minus_logged_correct_images": 0,
+      "elapsed_seconds": 8701.29920220375
+    }
+  ],
+  "contrasts": [
+    {
+      "candidate": "e4",
+      "reference": "e1",
+      "best_difference_pp": -0.14000000000000057,
+      "last10_difference_pp": -0.2779999999999916,
+      "samples": 5000,
+      "both_correct": 3714,
+      "candidate_only_correct": 275,
+      "reference_only_correct": 282,
+      "both_wrong": 729,
+      "cpu_top1_difference_pp": -0.13999999999999999
+    },
+    {
+      "candidate": "e4",
+      "reference": "e4r",
+      "best_difference_pp": -0.29999999999999716,
+      "last10_difference_pp": -0.29999999999999716,
+      "samples": 5000,
+      "both_correct": 3732,
+      "candidate_only_correct": 257,
+      "reference_only_correct": 272,
+      "both_wrong": 739,
+      "cpu_top1_difference_pp": -0.3
+    }
+  ],
+  "validation_indices_sha256": "2c80060ed0fa8eba98b2023be25aa56794982c9d6bf762dd1eb29205835d67c2",
+  "evaluation_source_sha256": {
+    "analysis/compile_local_confirmation.py": "b58667827cde888f3ad3c2e0abd6dc7561c09840b691b09219150136f8b22e87",
+    "scripts/evaluate_member_c_val.py": "85e581f5c9eea05ddbd60c5d47c1ef5cf1efd7eb0defd1e518b922574133557b",
+    "evaluate.py": "771bdc874a6e8e6ff783ed6a8315a6c2cc47d1279081cc1d5119903b6f8adc3c"
+  },
+  "limitations": [
+    "Selected on validation; no official-test performance claim.",
+    "Validation prediction disagreements do not estimate training-seed uncertainty.",
+    "E4/E4-R final shapes are not exactly matched.",
+    "Old seed-42 runs use other hosts; do not pool as a controlled two-seed study."
+  ]
+}

@@ -41,4 +41,4 @@ python evaluate.py --checkpoint /path/to/best.pth --run-id RUN_ID \
   --log /path/to/epochs.csv --data-root /path/to/existing/cifar100 --split validation
 ```
 
-[统一评估入口](evaluate.py) 输出 Top‑1、Macro‑F1、交叉熵、checkpoint 哈希和固定验证划分哈希。冻结参数后可用 `--split test` 评价官方测试集，入口要求带完整训练日志以核对最佳验证 epoch。本次复用已有实验，正式同主机 E1/E4/E4-R 三臂、多 seed 复核以及官方测试分数仍为空。结论限于已有的单 seed 验证和独立增强审计。
+[统一评估入口](evaluate.py) 输出 Top‑1、Macro‑F1、交叉熵、checkpoint 哈希和固定验证划分哈希。冻结参数后可用 `--split test` 评价官方测试集，入口要求带完整训练日志以核对最佳验证 epoch。D 原交付复用已有实验；后续同机 seed-43 的 E1/E4/E4-R 三臂已完成并独立复评，结果为 79.92% / 79.78% / 80.08%，见 [补充核查](RESULTS_AUDIT.md)。同环境多 seed 复核和官方测试分数仍为空，不能仅用旧单 seed 正向对照宣称稳定提升。
